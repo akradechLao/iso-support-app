@@ -17,6 +17,8 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/i18n/I18nContext";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -30,20 +32,30 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Executive Dashboard", icon: "LayoutDashboard" },
-  { href: "/iso-progress", label: "ISO Progress", icon: "GitBranch" },
-  { href: "/documents", label: "Document Control", icon: "FileText" },
-  { href: "/audits", label: "Internal Audit", icon: "ClipboardCheck" },
-  { href: "/ncr-car", label: "NCR / CAR", icon: "AlertTriangle" },
-  { href: "/legal-compliance", label: "Legal Compliance", icon: "Scale" },
-  { href: "/risks", label: "Risk & Opportunity", icon: "Shield" },
-  { href: "/alerts", label: "Alert & Action", icon: "Bell" },
+  { href: "/dashboard", label: "nav.dashboard", icon: "LayoutDashboard" },
+  { href: "/iso-progress", label: "nav.isoProgress", icon: "GitBranch" },
+  { href: "/documents", label: "nav.documents", icon: "FileText" },
+  { href: "/audits", label: "nav.audits", icon: "ClipboardCheck" },
+  { href: "/ncr-car", label: "nav.ncrCar", icon: "AlertTriangle" },
+  { href: "/legal-compliance", label: "nav.legal", icon: "Scale" },
+  { href: "/risks", label: "nav.risks", icon: "Shield" },
+  { href: "/alerts", label: "nav.alerts", icon: "Bell" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useI18n();
+
+  const getLabel = (key: string) => {
+    const keys = key.split(".");
+    let value: unknown = t;
+    for (const k of keys) {
+      value = (value as Record<string, unknown>)?.[k];
+    }
+    return (typeof value === "string" ? value : key);
+  };
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
@@ -112,13 +124,18 @@ export default function Sidebar() {
                     )}
                   >
                     {Icon && <Icon className={cn("h-5 w-5 shrink-0", active ? "text-blue-600" : "text-slate-400")} />}
-                    {!collapsed && <span className="truncate">{item.label}</span>}
+                    {!collapsed && <span className="truncate">{getLabel(item.label)}</span>}
                   </Link>
                 </li>
               );
             })}
           </ul>
         </nav>
+
+        {/* Language Switcher */}
+        <div className="hidden border-t border-slate-100 p-3 lg:block">
+          <LanguageSwitcher />
+        </div>
 
         {/* Collapse toggle (desktop only) */}
         <div className="hidden border-t border-slate-100 p-3 lg:block">
@@ -127,7 +144,7 @@ export default function Sidebar() {
             className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700"
           >
             <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
-            {!collapsed && <span>Collapse</span>}
+            {!collapsed && <span>{t.common.collapse}</span>}
           </button>
         </div>
       </aside>

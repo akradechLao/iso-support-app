@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import { FilterProvider } from "@/hooks/useFilters";
+import { I18nProvider } from "@/i18n/I18nContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,11 @@ export default function RootLayout({
   return (
     <html lang="th" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full antialiased" style={{ fontFamily: "var(--font-geist-sans), Arial, Helvetica, sans-serif" }}>
-        <FilterProvider>
-          <AppShell>{children}</AppShell>
-        </FilterProvider>
+        <I18nProvider>
+          <FilterProvider>
+            <AppShell>{children}</AppShell>
+          </FilterProvider>
+        </I18nProvider>
       </body>
     </html>
   );

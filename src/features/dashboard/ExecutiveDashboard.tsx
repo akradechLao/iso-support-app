@@ -21,10 +21,12 @@ import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 export default function ExecutiveDashboard() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
+  const { t } = useI18n();
 
   const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
   const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters]);
@@ -55,8 +57,8 @@ export default function ExecutiveDashboard() {
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Executive Dashboard</h1>
-            <p className="mt-1 text-sm text-slate-500">ISO management overview and key performance indicators</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.dashboard.title}</h1>
+            <p className="mt-1 text-sm text-slate-500">{t.dashboard.subtitle}</p>
           </div>
           <FilterBar filters={filters} onChange={setFilters} departments={departments} />
         </div>
@@ -64,50 +66,50 @@ export default function ExecutiveDashboard() {
         {/* KPI Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
           <KPICard
-            title="Overall Progress"
+            title={t.dashboard.overallProgress}
             value={`${auditKpis.completionRate}%`}
-            subtitle={`${auditKpis.completed}/${auditKpis.total} audits`}
+            subtitle={t.dashboard.overallProgressSubtitle.replace("{completed}", String(auditKpis.completed)).replace("{total}", String(auditKpis.total))}
             trend="up"
             trendValue="+5% vs last quarter"
             href="/iso-progress"
             icon={<TrendingUp className="h-6 w-6" />}
           />
           <KPICard
-            title="Open Findings"
+            title={t.dashboard.openFindings}
             value={riskKpis.total}
-            subtitle={`${riskKpis.high} high risk`}
+            subtitle={t.dashboard.openFindingsSubtitle.replace("{high}", String(riskKpis.high))}
             status={riskKpis.high > 3 ? "danger" : "warning"}
             href="/risks"
             icon={<Shield className="h-6 w-6" />}
           />
           <KPICard
-            title="Open NCR/CAR"
+            title={t.dashboard.openNcrCar}
             value={actionKpis.open}
-            subtitle={`${actionKpis.overdue} overdue`}
+            subtitle={t.dashboard.openNcrCarSubtitle.replace("{overdue}", String(actionKpis.overdue))}
             status={actionKpis.overdue > 0 ? "danger" : "warning"}
             href="/ncr-car"
             icon={<AlertTriangle className="h-6 w-6" />}
           />
           <KPICard
-            title="Overdue Actions"
+            title={t.dashboard.overdueActions}
             value={actionKpis.overdue}
-            subtitle={`${actionKpis.critical} critical`}
+            subtitle={t.dashboard.overdueActionsSubtitle.replace("{critical}", String(actionKpis.critical))}
             status={actionKpis.overdue > 0 ? "danger" : "good"}
             href="/alerts?status=overdue"
             icon={<AlertTriangle className="h-6 w-6" />}
           />
           <KPICard
-            title="Compliance Rate"
+            title={t.dashboard.complianceRate}
             value={`${legalKpis.complianceRate}%`}
-            subtitle={`${legalKpis.nonComply} non-compliant`}
+            subtitle={t.dashboard.complianceRateSubtitle.replace("{nonComply}", String(legalKpis.nonComply))}
             status={legalKpis.nonComply > 0 ? "warning" : "good"}
             href="/legal-compliance"
             icon={<Scale className="h-6 w-6" />}
           />
           <KPICard
-            title="Documents Active"
+            title={t.dashboard.documentsActive}
             value={documentKpis.active}
-            subtitle={`${documentKpis.dueReview} due review`}
+            subtitle={t.dashboard.documentsActiveSubtitle.replace("{dueReview}", String(documentKpis.dueReview))}
             status={documentKpis.dueReview > 3 ? "warning" : "good"}
             href="/documents"
             icon={<FileText className="h-6 w-6" />}
@@ -120,11 +122,11 @@ export default function ExecutiveDashboard() {
           <div className="overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-900/15 sm:p-7">
             <div className="flex justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold text-blue-200">System Health Score</p>
-                <p className="mt-1 text-sm text-slate-400">Requirements, evidence and corrective actions in one view</p>
+                <p className="text-sm font-semibold text-blue-200">{t.dashboard.systemHealth}</p>
+                <p className="mt-1 text-sm text-slate-400">{t.dashboard.systemHealthDesc}</p>
               </div>
               <span className="h-fit rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">
-                {actionKpis.overdue === 0 ? "● Healthy" : "● Attention"}
+                {actionKpis.overdue === 0 ? t.dashboard.healthy : t.dashboard.attention}
               </span>
             </div>
 
@@ -140,7 +142,7 @@ export default function ExecutiveDashboard() {
                     <strong className="text-5xl tracking-tighter">{auditKpis.completionRate}</strong>
                     <span className="text-xl text-slate-400">%</span>
                     <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-emerald-300">
-                      {auditKpis.completionRate >= 80 ? "Healthy" : "Needs Attention"}
+                      {auditKpis.completionRate >= 80 ? t.common.healthy : t.common.needsAttention}
                     </p>
                   </div>
                 </div>
@@ -155,30 +157,30 @@ export default function ExecutiveDashboard() {
 
             <div className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">Open NC / CAR</p>
+                <p className="text-[11px] text-slate-400">{t.dashboard.openNcrCar}</p>
                 <p className="mt-1 text-xl font-black">{actionKpis.open}</p>
-                <p className="mt-1 text-[11px] text-rose-300">{actionKpis.overdue} overdue</p>
+                <p className="mt-1 text-[11px] text-rose-300">{actionKpis.overdue} {t.common.overdue}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">Legal compliance</p>
+                <p className="text-[11px] text-slate-400">{t.dashboard.legalCompliance}</p>
                 <p className="mt-1 text-xl font-black">{legalKpis.complianceRate}%</p>
-                <p className="mt-1 text-[11px] text-slate-400">{legalKpis.nonComply} non-compliant</p>
+                <p className="mt-1 text-[11px] text-slate-400">{legalKpis.nonComply} {t.dashboard.nonCompliant}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">Audit coverage</p>
+                <p className="text-[11px] text-slate-400">{t.audits.auditCompletion}</p>
                 <p className="mt-1 text-xl font-black">{auditKpis.completionRate}%</p>
-                <p className="mt-1 text-[11px] text-slate-400">{auditKpis.completed} / {auditKpis.total} complete</p>
+                <p className="mt-1 text-[11px] text-slate-400">{auditKpis.completed} / {auditKpis.total} {t.common.complete}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">Documents</p>
+                <p className="text-[11px] text-slate-400">{t.dashboard.documentStatus}</p>
                 <p className="mt-1 text-xl font-black">{documentKpis.active}</p>
-                <p className="mt-1 text-[11px] text-slate-400">{documentKpis.dueReview} due review</p>
+                <p className="mt-1 text-[11px] text-slate-400">{documentKpis.dueReview} {t.dashboard.dueReview}</p>
               </div>
             </div>
           </div>
 
           {/* Right - Management Attention */}
-          <Panel title="Management Attention" subtitle="Prioritized by risk, impact & due date">
+          <Panel title={t.dashboard.managementAttention} subtitle={t.dashboard.managementAttentionDesc}>
             <div className="mt-4 space-y-2">
               {recentActions.slice(0, 6).map((action) => (
                 <button
@@ -209,7 +211,7 @@ export default function ExecutiveDashboard() {
               onClick={() => router.push("/alerts")}
               className="mt-4 text-sm font-bold text-blue-600 hover:text-blue-700"
             >
-              View action center →
+              {t.dashboard.viewActionCenter}
             </button>
           </Panel>
         </div>
@@ -217,14 +219,14 @@ export default function ExecutiveDashboard() {
         {/* Second Row */}
         <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_1fr_.9fr]">
           {/* Module Performance */}
-          <Panel title="Performance by Module" subtitle="Operational drill-down">
+          <Panel title={t.dashboard.performanceByModule} subtitle={t.dashboard.operationalDrilldown}>
             <div className="mt-5">
               <BarChart data={modulePerformance} height={250} />
             </div>
           </Panel>
 
           {/* Risk Heatmap */}
-          <Panel title="Risk Heatmap" subtitle="Likelihood × Impact">
+          <Panel title={t.dashboard.riskHeatmap} subtitle={t.dashboard.likelihoodImpact}>
             <div className="mt-5">
               <RiskHeatmap
                 data={heatmapData}
@@ -234,26 +236,26 @@ export default function ExecutiveDashboard() {
               />
             </div>
             <p className="mt-5 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">
-              <b>{riskKpis.high} high risks</b> need an assigned treatment plan.
+              <b>{t.dashboard.highRisksNeedPlan.replace("{count}", String(riskKpis.high))}</b>
             </p>
           </Panel>
 
           {/* Document Status */}
-          <Panel title="Document Status" subtitle="Document control overview">
+          <Panel title={t.dashboard.documentStatus} subtitle={t.dashboard.documentControlOverview}>
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600">Active documents</span>
+                <span className="text-slate-600">{t.dashboard.activeDocuments}</span>
                 <span className="font-bold text-slate-900">{documentKpis.active}</span>
               </div>
-              <ProgressBar label="Published" value={documentKpis.active} max={documentKpis.total} color="#2563eb" />
-              <ProgressBar label="Due Review" value={documentKpis.dueReview} max={documentKpis.total} color="#f59e0b" />
-              <ProgressBar label="Pending Approval" value={documentKpis.pendingApproval} max={documentKpis.total} color="#8b5cf6" />
-              <ProgressBar label="Obsolete" value={documentKpis.obsolete} max={documentKpis.total} color="#94a3b8" />
+              <ProgressBar label={t.dashboard.published} value={documentKpis.active} max={documentKpis.total} color="#2563eb" />
+              <ProgressBar label={t.dashboard.dueReview} value={documentKpis.dueReview} max={documentKpis.total} color="#f59e0b" />
+              <ProgressBar label={t.dashboard.pendingApproval} value={documentKpis.pendingApproval} max={documentKpis.total} color="#8b5cf6" />
+              <ProgressBar label={t.dashboard.obsolete} value={documentKpis.obsolete} max={documentKpis.total} color="#94a3b8" />
               <button
                 onClick={() => router.push("/documents")}
                 className="mt-2 text-sm font-bold text-blue-600 hover:text-blue-700"
               >
-                View all documents →
+                {t.dashboard.viewAllDocuments}
               </button>
             </div>
           </Panel>
@@ -262,25 +264,25 @@ export default function ExecutiveDashboard() {
         {/* Third Row - Legal + Audit Summary */}
         <div className="mt-5 grid gap-5 lg:grid-cols-2">
           {/* Legal Compliance Summary */}
-          <Panel title="Legal Compliance" subtitle="Compliance status overview">
+          <Panel title={t.dashboard.legalCompliance} subtitle={t.dashboard.complianceStatusOverview}>
             <div className="mt-5">
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-xl bg-emerald-50 p-4 text-center">
                   <p className="text-2xl font-black text-emerald-700">{legalKpis.comply}</p>
-                  <p className="mt-1 text-xs font-medium text-emerald-600">Compliant</p>
+                  <p className="mt-1 text-xs font-medium text-emerald-600">{t.dashboard.compliant}</p>
                 </div>
                 <div className="rounded-xl bg-red-50 p-4 text-center">
                   <p className="text-2xl font-black text-red-700">{legalKpis.nonComply}</p>
-                  <p className="mt-1 text-xs font-medium text-red-600">Non-Compliant</p>
+                  <p className="mt-1 text-xs font-medium text-red-600">{t.dashboard.nonCompliant}</p>
                 </div>
                 <div className="rounded-xl bg-amber-50 p-4 text-center">
                   <p className="text-2xl font-black text-amber-700">{legalKpis.pending}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">Pending</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600">{t.dashboard.pending}</p>
                 </div>
               </div>
               <div className="mt-5">
                 <ProgressBar
-                  label="Overall Compliance"
+                  label={t.dashboard.overallCompliance}
                   value={legalKpis.complianceRate}
                   color="#10b981"
                   size="lg"
@@ -290,31 +292,31 @@ export default function ExecutiveDashboard() {
                 onClick={() => router.push("/legal-compliance")}
                 className="mt-4 text-sm font-bold text-blue-600 hover:text-blue-700"
               >
-                View legal register →
+                {t.dashboard.viewLegalRegister}
               </button>
             </div>
           </Panel>
 
           {/* Audit Summary */}
-          <Panel title="Internal Audit" subtitle="Audit plan and findings">
+          <Panel title={t.dashboard.internalAudit} subtitle={t.dashboard.auditPlanAndFindings}>
             <div className="mt-5">
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-xl bg-blue-50 p-4 text-center">
                   <p className="text-2xl font-black text-blue-700">{auditKpis.completed}</p>
-                  <p className="mt-1 text-xs font-medium text-blue-600">Completed</p>
+                  <p className="mt-1 text-xs font-medium text-blue-600">{t.dashboard.completed}</p>
                 </div>
                 <div className="rounded-xl bg-amber-50 p-4 text-center">
                   <p className="text-2xl font-black text-amber-700">{auditKpis.planned}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">Planned</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600">{t.dashboard.planned}</p>
                 </div>
                 <div className="rounded-xl bg-violet-50 p-4 text-center">
                   <p className="text-2xl font-black text-violet-700">{auditKpis.inProgress}</p>
-                  <p className="mt-1 text-xs font-medium text-violet-600">In Progress</p>
+                  <p className="mt-1 text-xs font-medium text-violet-600">{t.dashboard.inProgress}</p>
                 </div>
               </div>
               <div className="mt-5">
                 <ProgressBar
-                  label="Audit Completion"
+                  label={t.dashboard.auditCompletion}
                   value={auditKpis.completionRate}
                   color="#3b82f6"
                   size="lg"
@@ -324,7 +326,7 @@ export default function ExecutiveDashboard() {
                 onClick={() => router.push("/audits")}
                 className="mt-4 text-sm font-bold text-blue-600 hover:text-blue-700"
               >
-                View audit schedule →
+                {t.dashboard.viewAuditSchedule}
               </button>
             </div>
           </Panel>
