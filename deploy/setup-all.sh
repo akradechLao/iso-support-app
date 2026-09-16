@@ -19,7 +19,7 @@ NC='\033[0m'
 DOMAIN=""
 SERVER_IP=""
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_DIR="/www/wwwroot/iso-support-app"
+APP_DIR="/www/wwwroot/iso-report-app.northernthai.co.th"
 LOG_FILE="/tmp/iso-setup-$(date +%Y%m%d-%H%M%S).log"
 
 # Parse arguments
@@ -195,7 +195,7 @@ phase3() {
     # Create Nginx config
     print_step "3.1" "Creating Nginx configuration..."
     
-    NGINX_CONF="/www/server/panel/vhost/nginx/iso-support-app.conf"
+    NGINX_CONF="/www/server/panel/vhost/nginx/iso-report-app.northernthai.co.th.conf"
     
     cat > "$NGINX_CONF" <<EOF
 # ISO Support App - Nginx Configuration
