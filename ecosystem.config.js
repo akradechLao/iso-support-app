@@ -4,7 +4,7 @@ module.exports = {
       name: "iso-support-app",
       script: "node_modules/next/dist/bin/next",
       args: "start -p 3001",
-      cwd: "/www/wwwroot/iso-support-app/app",
+      cwd: "/www/wwwroot/iso-support-app",
       env: {
         NODE_ENV: "production",
         PORT: 3001,

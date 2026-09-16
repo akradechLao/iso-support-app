@@ -153,7 +153,7 @@ phase2() {
     
     # Install dependencies
     print_step "2.2" "Installing app dependencies..."
-    cd "$APP_DIR/app"
+    cd "$APP_DIR"
     npm install >> "$LOG_FILE" 2>&1
     print_success "Dependencies installed"
     
@@ -171,7 +171,7 @@ phase2() {
     
     # Setup PM2
     print_step "2.5" "Starting application with PM2..."
-    cd "$APP_DIR/app"
+    cd "$APP_DIR"
     pm2 delete iso-support-app 2>/dev/null || true
     pm2 start ecosystem.config.js >> "$LOG_FILE" 2>&1
     pm2 save >> "$LOG_FILE" 2>&1
