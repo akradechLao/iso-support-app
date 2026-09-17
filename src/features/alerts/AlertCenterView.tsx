@@ -10,10 +10,12 @@ import FilterBar from "@/components/ui/FilterBar";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/utils";
 import { Bell, AlertTriangle, Clock, CheckCircle } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 export default function AlertCenterView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
+  const { t } = useI18n();
 
   const actions = useMemo(() => actionRepo.findAll(filters), [filters]);
   const overdueActions = useMemo(() => actionRepo.findOverdue(), []);
@@ -32,9 +34,9 @@ export default function AlertCenterView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Alert & Action Center</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.alerts.title}</h1>
             <p className="mt-1 text-sm text-slate-500">
-              Unified action center across all modules
+              {t.alerts.subtitle}
             </p>
           </div>
           <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
@@ -42,32 +44,32 @@ export default function AlertCenterView() {
 
         {/* Summary Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Panel title="Overdue Actions" subtitle="Require immediate attention">
+          <Panel title={t.alerts.overdueActions} subtitle={t.alerts.requireImmediateAttention}>
             <div className="mt-4">
               <p className="text-3xl font-black text-red-600">{overdueActions.length}</p>
-              <p className="mt-1 text-sm text-slate-500">actions past their due date</p>
+              <p className="mt-1 text-sm text-slate-500">{t.alerts.actionsPastDue}</p>
             </div>
           </Panel>
-          <Panel title="Critical Priority" subtitle="Highest severity items">
+          <Panel title={t.alerts.criticalPriority} subtitle={t.alerts.highestSeverity}>
             <div className="mt-4">
               <p className="text-3xl font-black text-orange-600">
                 {actions.filter((a) => a.priority === "critical").length}
               </p>
-              <p className="mt-1 text-sm text-slate-500">critical items requiring action</p>
+              <p className="mt-1 text-sm text-slate-500">{t.alerts.criticalItems}</p>
             </div>
           </Panel>
-          <Panel title="Pending Verification" subtitle="Awaiting verification">
+          <Panel title={t.alerts.pendingVerification} subtitle={t.alerts.awaitingVerification}>
             <div className="mt-4">
               <p className="text-3xl font-black text-blue-600">
                 {actions.filter((a) => a.status === "action_in_progress" || a.status === "follow_up").length}
               </p>
-              <p className="mt-1 text-sm text-slate-500">actions in progress or pending</p>
+              <p className="mt-1 text-sm text-slate-500">{t.alerts.actionsInProgress}</p>
             </div>
           </Panel>
         </div>
 
         {/* Action List */}
-        <Panel title="All Actions" subtitle="Prioritized by risk, impact & due date" className="mt-6">
+        <Panel title={t.alerts.allActions} subtitle={t.alerts.prioritizedByRisk} className="mt-6">
           <div className="mt-4 space-y-2">
             {sortedActions.map((action) => {
               const isOverdue = new Date(action.dueDate) < new Date() && action.status !== "closed" && action.status !== "verified";
@@ -96,13 +98,13 @@ export default function AlertCenterView() {
                       <StatusBadge status={action.status} />
                       {isOverdue && (
                         <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">
-                          OVERDUE
+                          {t.alerts.overdue}
                         </span>
                       )}
                     </div>
                     <p className="mt-1 truncate text-sm font-medium text-slate-700">{action.title}</p>
                     <p className="mt-1 text-xs text-slate-400">
-                      {departments.find((d) => d.id === action.departmentId)?.name} · Due: {action.dueDate}
+                      {departments.find((d) => d.id === action.departmentId)?.name} · {t.ncrCar.due} {action.dueDate}
                     </p>
                   </div>
                   <span
@@ -117,7 +119,7 @@ export default function AlertCenterView() {
                         : "bg-emerald-100 text-emerald-700"
                     )}
                   >
-                    {action.priority}
+                    {t.priority[action.priority]}
                   </span>
                 </button>
               );

@@ -13,10 +13,12 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { LegalRequirement } from "@/types";
 import { Scale, CheckCircle, XCircle, Clock } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 export default function LegalComplianceView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
+  const { t } = useI18n();
 
   const kpis = useMemo(() => legalRepo.getKpis(filters), [filters]);
   const legal = useMemo(() => legalRepo.findAll(filters), [filters]);
@@ -36,17 +38,17 @@ export default function LegalComplianceView() {
   }, [legal]);
 
   const columns: Column<LegalRequirement>[] = [
-    { key: "id", header: "ID", sortable: true },
-    { key: "law", header: "Law / Regulation", sortable: true },
-    { key: "type", header: "Type", sortable: true },
+    { key: "id", header: t.legal.id, sortable: true },
+    { key: "law", header: t.legal.lawRegulation, sortable: true },
+    { key: "type", header: t.legal.type, sortable: true },
     {
       key: "departmentId",
-      header: "Department",
+      header: t.legal.department,
       render: (item) => departments.find((d) => d.id === item.departmentId)?.name || item.departmentId,
     },
     {
       key: "status",
-      header: "Status",
+      header: t.legal.status,
       render: (item) => <StatusBadge status={item.status} />,
     },
   ];
@@ -56,9 +58,9 @@ export default function LegalComplianceView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Legal Compliance</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.legal.title}</h1>
             <p className="mt-1 text-sm text-slate-500">
-              Legal requirements tracking and compliance status
+              {t.legal.subtitle}
             </p>
           </div>
           <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
@@ -66,16 +68,16 @@ export default function LegalComplianceView() {
 
         {/* KPI Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <KPICard title="Total Requirements" value={kpis.total} href="/legal-compliance" icon={<Scale className="h-6 w-6" />} />
-          <KPICard title="Compliant" value={kpis.comply} status="good" icon={<CheckCircle className="h-6 w-6" />} />
-          <KPICard title="Non-Compliant" value={kpis.nonComply} status={kpis.nonComply > 0 ? "danger" : "good"} icon={<XCircle className="h-6 w-6" />} />
-          <KPICard title="Pending Assessment" value={kpis.pending} status="warning" icon={<Clock className="h-6 w-6" />} />
-          <KPICard title="Compliance Rate" value={`${kpis.complianceRate}%`} status={kpis.complianceRate >= 90 ? "good" : "warning"} icon={<Scale className="h-6 w-6" />} />
+          <KPICard title={t.legal.totalRequirements} value={kpis.total} href="/legal-compliance" icon={<Scale className="h-6 w-6" />} />
+          <KPICard title={t.legal.compliant} value={kpis.comply} status="good" icon={<CheckCircle className="h-6 w-6" />} />
+          <KPICard title={t.legal.nonCompliant} value={kpis.nonComply} status={kpis.nonComply > 0 ? "danger" : "good"} icon={<XCircle className="h-6 w-6" />} />
+          <KPICard title={t.legal.pendingAssessment} value={kpis.pending} status="warning" icon={<Clock className="h-6 w-6" />} />
+          <KPICard title={t.legal.complianceRate} value={`${kpis.complianceRate}%`} status={kpis.complianceRate >= 90 ? "good" : "warning"} icon={<Scale className="h-6 w-6" />} />
         </div>
 
         <div className="mt-6 grid gap-5 xl:grid-cols-2">
           {/* Compliance by Type */}
-          <Panel title="Compliance by Law Type" subtitle="Breakdown by category">
+          <Panel title={t.legal.complianceByLawType} subtitle={t.legal.breakdownByCategory}>
             <div className="mt-4 space-y-4">
               {byType.map((item) => (
                 <div key={item.type}>
@@ -90,25 +92,25 @@ export default function LegalComplianceView() {
           </Panel>
 
           {/* Overall Status */}
-          <Panel title="Overall Compliance Status" subtitle="Summary of all requirements">
+          <Panel title={t.legal.overallComplianceStatus} subtitle={t.legal.summaryOfAllRequirements}>
             <div className="mt-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-xl bg-emerald-50 p-4 text-center">
                   <p className="text-3xl font-black text-emerald-700">{kpis.comply}</p>
-                  <p className="mt-1 text-xs font-medium text-emerald-600">Compliant</p>
+                  <p className="mt-1 text-xs font-medium text-emerald-600">{t.legal.compliant}</p>
                 </div>
                 <div className="rounded-xl bg-red-50 p-4 text-center">
                   <p className="text-3xl font-black text-red-700">{kpis.nonComply}</p>
-                  <p className="mt-1 text-xs font-medium text-red-600">Non-Compliant</p>
+                  <p className="mt-1 text-xs font-medium text-red-600">{t.legal.nonCompliant}</p>
                 </div>
                 <div className="rounded-xl bg-amber-50 p-4 text-center">
                   <p className="text-3xl font-black text-amber-700">{kpis.pending}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">Pending</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600">{t.legal.pendingAssessment}</p>
                 </div>
               </div>
               <div className="mt-6">
                 <ProgressBar
-                  label="Overall Compliance Rate"
+                  label={t.legal.overallComplianceRate}
                   value={kpis.complianceRate}
                   color="#10b981"
                   size="lg"
@@ -119,13 +121,13 @@ export default function LegalComplianceView() {
         </div>
 
         {/* Legal Register Table */}
-        <Panel title="Legal Register" subtitle="All legal requirements" className="mt-6">
+        <Panel title={t.legal.legalRegister} subtitle={t.legal.allLegalRequirements} className="mt-6">
           <div className="mt-4">
             <DataTable
               columns={columns as unknown as Column<Record<string, unknown>>[]}
               data={legal as unknown as Record<string, unknown>[]}
               onRowClick={(item) => router.push(`/legal-compliance/${(item as unknown as LegalRequirement).id}`)}
-              searchPlaceholder="Search legal requirements..."
+              searchPlaceholder={t.legal.searchLegal}
             />
           </div>
         </Panel>

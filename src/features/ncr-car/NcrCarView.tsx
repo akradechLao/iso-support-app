@@ -12,22 +12,24 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import { CorrectiveAction } from "@/types";
 import { AlertTriangle, Clock, CheckCircle, AlertCircle, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/i18n/I18nContext";
 
 type ViewMode = "kanban" | "list";
-
-const KANBAN_COLUMNS = [
-  { key: "open", label: "Open", statuses: ["open", "pending", "planned"] },
-  { key: "root_cause", label: "Root Cause", statuses: ["root_cause"] },
-  { key: "action_planned", label: "Action Planned", statuses: ["action_planned"] },
-  { key: "in_progress", label: "In Progress", statuses: ["action_in_progress", "in_progress"] },
-  { key: "verification", label: "Verification", statuses: ["follow_up", "verified"] },
-  { key: "closed", label: "Closed", statuses: ["closed"] },
-];
 
 export default function NcrCarView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
+  const { t } = useI18n();
+
+  const KANBAN_COLUMNS = [
+    { key: "open", label: t.status.open, statuses: ["open", "pending", "planned"] },
+    { key: "root_cause", label: t.status.root_cause, statuses: ["root_cause"] },
+    { key: "action_planned", label: t.status.action_planned, statuses: ["action_planned"] },
+    { key: "in_progress", label: t.status.in_progress, statuses: ["action_in_progress", "in_progress"] },
+    { key: "verification", label: t.ncrCar.pendingVerification, statuses: ["follow_up", "verified"] },
+    { key: "closed", label: t.status.closed, statuses: ["closed"] },
+  ];
 
   const kpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
   const actions = useMemo(() => actionRepo.findAll(filters), [filters]);
@@ -43,9 +45,9 @@ export default function NcrCarView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">NCR / CAR</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.ncrCar.title}</h1>
             <p className="mt-1 text-sm text-slate-500">
-              Non-Conformance Reports and Corrective Action Requests
+              {t.ncrCar.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -58,7 +60,7 @@ export default function NcrCarView() {
                   viewMode === "kanban" ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"
                 )}
               >
-                Board
+                {t.ncrCar.board}
               </button>
               <button
                 onClick={() => setViewMode("list")}
@@ -67,7 +69,7 @@ export default function NcrCarView() {
                   viewMode === "list" ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"
                 )}
               >
-                List
+                {t.ncrCar.list}
               </button>
             </div>
           </div>
@@ -75,11 +77,11 @@ export default function NcrCarView() {
 
         {/* KPI Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <KPICard title="Open NCR/CAR" value={kpis.open} status={kpis.open > 10 ? "warning" : "good"} href="/ncr-car" icon={<AlertTriangle className="h-6 w-6" />} />
-          <KPICard title="Critical" value={kpis.critical} status={kpis.critical > 0 ? "danger" : "good"} icon={<AlertCircle className="h-6 w-6" />} />
-          <KPICard title="Overdue" value={kpis.overdue} status={kpis.overdue > 0 ? "danger" : "good"} icon={<Clock className="h-6 w-6" />} />
-          <KPICard title="Pending Verification" value={kpis.pendingVerification} status="warning" icon={<Eye className="h-6 w-6" />} />
-          <KPICard title="Closed" value={kpis.closed} status="good" icon={<CheckCircle className="h-6 w-6" />} />
+          <KPICard title={t.ncrCar.openNcrCar} value={kpis.open} status={kpis.open > 10 ? "warning" : "good"} href="/ncr-car" icon={<AlertTriangle className="h-6 w-6" />} />
+          <KPICard title={t.ncrCar.critical} value={kpis.critical} status={kpis.critical > 0 ? "danger" : "good"} icon={<AlertCircle className="h-6 w-6" />} />
+          <KPICard title={t.ncrCar.overdue} value={kpis.overdue} status={kpis.overdue > 0 ? "danger" : "good"} icon={<Clock className="h-6 w-6" />} />
+          <KPICard title={t.ncrCar.pendingVerification} value={kpis.pendingVerification} status="warning" icon={<Eye className="h-6 w-6" />} />
+          <KPICard title={t.ncrCar.closed} value={kpis.closed} status="good" icon={<CheckCircle className="h-6 w-6" />} />
         </div>
 
         {/* Kanban Board */}
@@ -127,7 +129,7 @@ export default function NcrCarView() {
                       ))}
                       {colActions.length === 0 && (
                         <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-400">
-                          No items
+                          {t.ncrCar.noItems}
                         </div>
                       )}
                     </div>
@@ -140,7 +142,7 @@ export default function NcrCarView() {
 
         {/* List View */}
         {viewMode === "list" && (
-          <Panel title="All NCR/CAR Records" subtitle="Complete list of corrective actions" className="mt-6">
+          <Panel title={t.ncrCar.allRecords} subtitle={t.ncrCar.completeList} className="mt-6">
             <div className="mt-4 space-y-2">
               {actions.map((action) => (
                 <button
@@ -165,7 +167,7 @@ export default function NcrCarView() {
                     </div>
                     <p className="mt-1 truncate text-sm font-medium text-slate-700">{action.title}</p>
                     <p className="mt-1 text-xs text-slate-400">
-                      {departments.find((d) => d.id === action.departmentId)?.name} · Due: {action.dueDate}
+                      {departments.find((d) => d.id === action.departmentId)?.name} · {t.ncrCar.due} {action.dueDate}
                     </p>
                   </div>
                 </button>

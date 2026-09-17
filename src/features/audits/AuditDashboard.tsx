@@ -14,10 +14,12 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { Audit } from "@/types";
 import { ClipboardCheck, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 export default function AuditDashboard() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
+  const { t } = useI18n();
 
   const kpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
   const audits = useMemo(() => auditRepo.findAll(filters), [filters]);
@@ -37,11 +39,11 @@ export default function AuditDashboard() {
   }, [audits]);
 
   const columns: Column<Audit>[] = [
-    { key: "id", header: "Audit ID", sortable: true },
-    { key: "title", header: "Scope", sortable: true },
+    { key: "id", header: t.audits.auditId, sortable: true },
+    { key: "title", header: t.audits.scope, sortable: true },
     {
       key: "standardId",
-      header: "Standard",
+      header: t.audits.standard,
       render: (item) => {
         const std = standards.find((s) => s.id === item.standardId);
         return std?.code || item.standardId;
@@ -49,18 +51,18 @@ export default function AuditDashboard() {
     },
     {
       key: "departmentId",
-      header: "Department",
+      header: t.audits.department,
       render: (item) => departments.find((d) => d.id === item.departmentId)?.name || item.departmentId,
     },
-    { key: "plannedDate", header: "Planned Date", sortable: true },
+    { key: "plannedDate", header: t.audits.plannedDate, sortable: true },
     {
       key: "status",
-      header: "Status",
+      header: t.audits.status,
       render: (item) => <StatusBadge status={item.status} />,
     },
     {
       key: "findingCount",
-      header: "Findings",
+      header: t.audits.findings,
       render: (item) => (
         <span className={`font-bold ${item.findingCount > 2 ? "text-red-600" : item.findingCount > 0 ? "text-amber-600" : "text-slate-400"}`}>
           {item.findingCount}
@@ -74,9 +76,9 @@ export default function AuditDashboard() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Internal Audit</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.audits.title}</h1>
             <p className="mt-1 text-sm text-slate-500">
-              Audit plan completion, coverage and findings analysis
+              {t.audits.subtitle}
             </p>
           </div>
           <FilterBar filters={filters} onChange={setFilters} departments={departments} />
@@ -85,27 +87,27 @@ export default function AuditDashboard() {
         {/* KPI Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <KPICard
-            title="Audit Completion"
+            title={t.audits.auditCompletion}
             value={`${kpis.completionRate}%`}
-            subtitle={`${kpis.completed}/${kpis.total} audits`}
+            subtitle={t.audits.auditCompletionSubtitle.replace("{completed}", String(kpis.completed)).replace("{total}", String(kpis.total))}
             trend="up"
             href="/audits"
             icon={<ClipboardCheck className="h-6 w-6" />}
           />
           <KPICard
-            title="Completed"
+            title={t.audits.completed}
             value={kpis.completed}
             status="good"
             icon={<CheckCircle className="h-6 w-6" />}
           />
           <KPICard
-            title="Planned"
+            title={t.audits.planned}
             value={kpis.planned}
             status="warning"
             icon={<Clock className="h-6 w-6" />}
           />
           <KPICard
-            title="In Progress"
+            title={t.audits.inProgress}
             value={kpis.inProgress}
             status="warning"
             icon={<TrendingUp className="h-6 w-6" />}
@@ -114,25 +116,25 @@ export default function AuditDashboard() {
 
         <div className="mt-6 grid gap-5 xl:grid-cols-3">
           {/* Findings by Severity */}
-          <Panel title="Findings by Severity" subtitle="Distribution of audit findings">
+          <Panel title={t.audits.findingsBySeverity} subtitle={t.audits.findingsDistribution}>
             <div className="mt-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-red-600">Critical</span>
+                <span className="text-sm text-red-600">{t.audits.critical}</span>
                 <span className="font-bold text-red-700">{findingsBySeverity.critical}</span>
               </div>
               <ProgressBar value={findingsBySeverity.critical} max={20} color="#ef4444" size="sm" showValue={false} />
               <div className="flex items-center justify-between">
-                <span className="text-sm text-orange-600">High</span>
+                <span className="text-sm text-orange-600">{t.audits.high}</span>
                 <span className="font-bold text-orange-700">{findingsBySeverity.high}</span>
               </div>
               <ProgressBar value={findingsBySeverity.high} max={20} color="#f97316" size="sm" showValue={false} />
               <div className="flex items-center justify-between">
-                <span className="text-sm text-amber-600">Medium</span>
+                <span className="text-sm text-amber-600">{t.audits.medium}</span>
                 <span className="font-bold text-amber-700">{findingsBySeverity.medium}</span>
               </div>
               <ProgressBar value={findingsBySeverity.medium} max={20} color="#f59e0b" size="sm" showValue={false} />
               <div className="flex items-center justify-between">
-                <span className="text-sm text-emerald-600">Low</span>
+                <span className="text-sm text-emerald-600">{t.audits.low}</span>
                 <span className="font-bold text-emerald-700">{findingsBySeverity.low}</span>
               </div>
               <ProgressBar value={findingsBySeverity.low} max={20} color="#10b981" size="sm" showValue={false} />
@@ -140,7 +142,7 @@ export default function AuditDashboard() {
           </Panel>
 
           {/* Audit by Standard */}
-          <Panel title="Audits by Standard" subtitle="Coverage across ISO standards">
+          <Panel title={t.audits.auditsByStandard} subtitle={t.audits.coverageAcrossStandards}>
             <div className="mt-4 space-y-4">
               {standards.map((std) => {
                 const stdAudits = audits.filter((a) => a.standardId === std.id);
@@ -160,7 +162,7 @@ export default function AuditDashboard() {
           </Panel>
 
           {/* Upcoming Audits */}
-          <Panel title="Upcoming Audits" subtitle="Next planned audits">
+          <Panel title={t.audits.upcomingAudits} subtitle={t.audits.nextPlannedAudits}>
             <div className="mt-4 space-y-2">
               {audits
                 .filter((a) => a.status === "planned")
@@ -183,13 +185,13 @@ export default function AuditDashboard() {
         </div>
 
         {/* Audit List */}
-        <Panel title="Audit Register" subtitle="All audits with findings" className="mt-6">
+        <Panel title={t.audits.auditRegister} subtitle={t.audits.allFindings} className="mt-6">
           <div className="mt-4">
             <DataTable
               columns={columns as unknown as Column<Record<string, unknown>>[]}
               data={audits as unknown as Record<string, unknown>[]}
               onRowClick={(item) => router.push(`/audits/${(item as unknown as Audit).id}`)}
-              searchPlaceholder="Search audits..."
+              searchPlaceholder={t.audits.searchAudits}
             />
           </div>
         </Panel>
