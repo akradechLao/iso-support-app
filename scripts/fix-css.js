@@ -2,39 +2,46 @@ const fs = require("fs");
 const path = require("path");
 
 const buildDir = path.join(__dirname, "..", ".next");
-const staticDir = path.join(buildDir, "static", "chunks");
+const chunksDir = path.join(buildDir, "static", "chunks");
+const cssDir = path.join(buildDir, "static", "css");
+const serverDir = path.join(buildDir, "server");
 
-if (!fs.existsSync(staticDir)) {
-  console.log("No static/chunks dir found, skipping CSS fix.");
+if (!fs.existsSync(serverDir)) {
+  console.log("No server dir found, skipping.");
   process.exit(0);
 }
 
-// Find all CSS files on disk
-const cssFiles = fs.readdirSync(staticDir).filter((f) => f.endsWith(".css"));
+// Find all CSS files on disk (check both chunks/ and css/)
+const cssFiles = [];
+if (fs.existsSync(chunksDir)) {
+  cssFiles.push(...fs.readdirSync(chunksDir).filter((f) => f.endsWith(".css")).map((f) => path.join(chunksDir, f)));
+}
+if (fs.existsSync(cssDir)) {
+  cssFiles.push(...fs.readdirSync(cssDir).filter((f) => f.endsWith(".css")).map((f) => path.join(cssDir, f)));
+}
+
 if (cssFiles.length === 0) {
   console.log("No CSS files found, skipping.");
   process.exit(0);
 }
 
-// Find all referenced CSS filenames in server output
-const serverDir = path.join(buildDir, "server", "app");
-if (!fs.existsSync(serverDir)) {
-  console.log("No server/app dir found, skipping.");
-  process.exit(0);
-}
+console.log(`Found ${cssFiles.length} CSS file(s): ${cssFiles.map((f) => path.basename(f)).join(", ")}`);
 
-const referencedCss = new Set();
+// Find all referenced CSS filenames in server output
+const referencedCss = new Map(); // refName -> match
 
 function scanDir(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       scanDir(fullPath);
-    } else if (entry.name.endsWith(".html") || entry.name.endsWith(".js")) {
+    } else if (entry.name.endsWith(".js")) {
       const content = fs.readFileSync(fullPath, "utf8");
       const matches = content.matchAll(/chunks\/([\w.-]+\.css)/g);
       for (const m of matches) {
-        referencedCss.add(m[1]);
+        if (!referencedCss.has(m[1])) {
+          referencedCss.set(m[1], m[0]);
+        }
       }
     }
   }
@@ -42,22 +49,17 @@ function scanDir(dir) {
 
 scanDir(serverDir);
 
-// Also scan turbopack output
-const turbopackDir = path.join(buildDir, "turbopack");
-if (fs.existsSync(turbopackDir)) {
-  scanDir(turbopackDir);
-}
-
 let fixed = 0;
-for (const ref of referencedCss) {
-  const refPath = path.join(staticDir, ref);
-  if (!fs.existsSync(refPath)) {
-    // Copy the first available CSS file as the referenced one
-    const source = path.join(staticDir, cssFiles[0]);
-    console.log(`Fixing: ${ref} -> copying from ${cssFiles[0]}`);
-    fs.copyFileSync(source, refPath);
-    fixed++;
-  }
+for (const [refName] of referencedCss) {
+  // Check if file exists in chunks/
+  const inChunks = path.join(chunksDir, refName);
+  if (fs.existsSync(inChunks)) continue;
+
+  // Copy first available CSS file with the referenced name
+  const source = cssFiles[0];
+  console.log(`Fixing: chunks/${refName} <- ${path.basename(source)}`);
+  fs.copyFileSync(source, inChunks);
+  fixed++;
 }
 
 if (fixed > 0) {
