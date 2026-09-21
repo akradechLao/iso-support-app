@@ -59,7 +59,7 @@ export default function Sidebar() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <div>
+    <>
       {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(true)}
@@ -131,24 +131,22 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        {/* Collapse toggle (desktop only) */}
-        <div className="hidden border-t border-slate-100 p-3 lg:block">
+        {/* Footer area */}
+        <div className="border-t border-slate-100 p-3">
+          {/* Collapse toggle (desktop only) */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+            className="hidden w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700 lg:flex"
           >
             <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
             {!collapsed && <span>{t.common.collapse}</span>}
           </button>
-        </div>
-
-        {/* Language Switcher */}
-        <div className="border-t border-slate-100 p-3">
-          <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+          {/* Language Switcher */}
+          <div className="mt-2 flex items-center justify-center gap-1 rounded-xl bg-slate-100 p-1">
             <button
               onClick={() => setLanguage("th")}
               className={cn(
-                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                 language === "th"
                   ? "bg-white text-blue-700 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"
@@ -159,7 +157,7 @@ export default function Sidebar() {
             <button
               onClick={() => setLanguage("en")}
               className={cn(
-                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                 language === "en"
                   ? "bg-white text-blue-700 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"
@@ -170,6 +168,6 @@ export default function Sidebar() {
           </div>
         </div>
       </aside>
-    </div>
+    </>
   );
 }
