@@ -133,7 +133,7 @@ export default function Sidebar() {
         </nav>
 
         {/* Language Switcher */}
-        <div className="hidden border-t border-slate-100 p-3 lg:block">
+        <div className="border-t border-slate-100 p-3">
           <LanguageSwitcher />
         </div>
 
