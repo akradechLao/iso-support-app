@@ -39,6 +39,8 @@ export default function FilterBar({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <select
+        id="filter-standard"
+        name="standard"
         value={filters.standard}
         onChange={(e) => update("standard", e.target.value)}
         className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
@@ -53,6 +55,8 @@ export default function FilterBar({
 
       {departments.length > 0 && (
         <select
+          id="filter-department"
+          name="department"
           value={filters.department}
           onChange={(e) => update("department", e.target.value)}
           className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
@@ -67,6 +71,8 @@ export default function FilterBar({
       )}
 
       <select
+        id="filter-status"
+        name="status"
         value={filters.status}
         onChange={(e) => update("status", e.target.value)}
         className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
@@ -81,6 +87,8 @@ export default function FilterBar({
 
       {showPeriod && (
         <select
+          id="filter-period"
+          name="period"
           value={filters.period}
           onChange={(e) => update("period", e.target.value)}
           className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
