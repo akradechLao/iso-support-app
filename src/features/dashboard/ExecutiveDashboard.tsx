@@ -159,7 +159,7 @@ export default function ExecutiveDashboard() {
           <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
             1 · {t.dashboard.title} — สรุป KPI ระบบ ISO
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             <KPITrendCard
               title="Active Documents"
               value={documentKpis.active}
@@ -224,7 +224,7 @@ export default function ExecutiveDashboard() {
         </div>
 
         {/* Row 2: Document Control + Document Revision + Internal Audit */}
-        <div className="mb-6 grid gap-5 xl:grid-cols-3">
+        <div className="mb-6 grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {/* Section 2: Document Control */}
           <Panel title="Document Control" subtitle="ควบคุมเอกสาร">
             <div className="mt-4">
@@ -259,7 +259,7 @@ export default function ExecutiveDashboard() {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Effective {documentKpis.active} ({documentKpis.total > 0 ? Math.round((documentKpis.active / documentKpis.total) * 100) : 0}%)</span>
                 <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-500" /> Due Review {documentKpis.dueReview}</span>
                 <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-red-500" /> Overdue {documentKpis.overdueReview}</span>
@@ -292,7 +292,7 @@ export default function ExecutiveDashboard() {
           {/* Section 4: Internal Audit */}
           <Panel title="Internal Audit" subtitle="การตรวจสอบภายใน">
             <div className="mt-4">
-              <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="rounded-lg bg-blue-50 dark:bg-blue-900/30 p-2">
                   <p className="text-lg font-black text-blue-700 dark:text-blue-300">{auditKpis.total}</p>
                   <p className="text-[10px] text-blue-600 dark:text-blue-400">AUDIT PLAN</p>
@@ -331,11 +331,11 @@ export default function ExecutiveDashboard() {
         </div>
 
         {/* Row 3: NCR/CAR + Finding Analysis + Training */}
-        <div className="mb-6 grid gap-5 xl:grid-cols-3">
+        <div className="mb-6 grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {/* Section 5: NCR/CAR Tracking */}
           <Panel title="NCR / CAR Tracking" subtitle="ติดตามการแก้ไขและป้องกัน">
             <div className="mt-4">
-              <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="rounded-lg bg-blue-50 dark:bg-blue-900/30 p-2">
                   <p className="text-lg font-black text-blue-700 dark:text-blue-300">{actionKpis.open}</p>
                   <p className="text-[10px] text-blue-600 dark:text-blue-400">OPEN</p>
@@ -392,7 +392,7 @@ export default function ExecutiveDashboard() {
           {/* Section 7: Training & Competency */}
           <Panel title="Training & Competency" subtitle="การฝึกอบรมและความสามารถ">
             <div className="mt-4">
-              <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="rounded-lg bg-slate-50 dark:bg-slate-700 p-2">
                   <p className="text-lg font-black text-slate-700 dark:text-slate-200">512</p>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400">REQUIRED</p>
@@ -436,11 +436,11 @@ export default function ExecutiveDashboard() {
         </div>
 
         {/* Row 4: Risk + Legal + Alert */}
-        <div className="mb-6 grid gap-5 xl:grid-cols-3">
+        <div className="mb-6 grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {/* Section 8: Risk & Opportunity */}
           <Panel title="Risk & Opportunity" subtitle="ความเสี่ยงและโอกาส">
             <div className="mt-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <DonutChart
                     data={[
@@ -475,7 +475,7 @@ export default function ExecutiveDashboard() {
           {/* Section 9: Legal Compliance */}
           <Panel title="Legal Compliance" subtitle="สรุปผลการปฏิบัติตามกฎหมาย">
             <div className="mt-4">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <DonutChart
                   data={legalDonutData}
                   centerLabel={`${legalKpis.complianceRate}%`}

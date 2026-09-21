@@ -57,7 +57,7 @@ function KPITrendCard({
         rounded-2xl border-l-4 border border-slate-200 dark:border-slate-700
         ${statusBorder[status]}
         bg-white dark:bg-slate-800
-        p-5 shadow-sm
+        p-4 lg:p-5 shadow-sm
         transition-all duration-200
         hover:shadow-md hover:-translate-y-0.5
       `}
@@ -75,7 +75,7 @@ function KPITrendCard({
       </div>
 
       {/* Value */}
-      <div className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+      <div className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
         {value}
       </div>
 
