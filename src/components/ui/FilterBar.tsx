@@ -3,6 +3,7 @@
 import { FilterState } from "@/types";
 import { ISO_STANDARDS } from "@/lib/constants";
 import { X } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 interface FilterBarProps {
   filters: FilterState;
@@ -17,6 +18,7 @@ export default function FilterBar({
   departments = [],
   showPeriod = true,
 }: FilterBarProps) {
+  const { t } = useI18n();
   const update = (key: keyof FilterState, value: string) => {
     onChange({ ...filters, [key]: value });
   };
@@ -45,7 +47,7 @@ export default function FilterBar({
         onChange={(e) => update("standard", e.target.value)}
         className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
       >
-        <option value="all">All Standards</option>
+        <option value="all">{t.common.allStandards}</option>
         {ISO_STANDARDS.map((s) => (
           <option key={s.id} value={s.id}>
             {s.code}
@@ -61,7 +63,7 @@ export default function FilterBar({
           onChange={(e) => update("department", e.target.value)}
           className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
         >
-          <option value="all">All Departments</option>
+          <option value="all">{t.common.allDepartments}</option>
           {departments.map((d) => (
             <option key={d.id} value={d.id}>
               {d.name}
@@ -77,12 +79,12 @@ export default function FilterBar({
         onChange={(e) => update("status", e.target.value)}
         className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
       >
-        <option value="all">All Status</option>
-        <option value="open">Open</option>
-        <option value="closed">Closed</option>
-        <option value="overdue">Overdue</option>
-        <option value="compliant">Compliant</option>
-        <option value="non_compliant">Non-Compliant</option>
+        <option value="all">{t.common.allStatus}</option>
+        <option value="open">{t.status.open}</option>
+        <option value="closed">{t.status.closed}</option>
+        <option value="overdue">{t.status.overdue}</option>
+        <option value="compliant">{t.status.compliant}</option>
+        <option value="non_compliant">{t.status.non_compliant}</option>
       </select>
 
       {showPeriod && (
@@ -93,10 +95,10 @@ export default function FilterBar({
           onChange={(e) => update("period", e.target.value)}
           className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-500"
         >
-          <option value="all">All Time</option>
-          <option value="30d">Last 30 Days</option>
-          <option value="90d">Last 90 Days</option>
-          <option value="ytd">Year to Date</option>
+          <option value="all">{t.common.allTime}</option>
+          <option value="30d">{t.common.last30Days}</option>
+          <option value="90d">{t.common.last90Days}</option>
+          <option value="ytd">{t.common.yearToDate}</option>
         </select>
       )}
 
@@ -106,7 +108,7 @@ export default function FilterBar({
           className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <X className="h-3.5 w-3.5" />
-          Clear
+          {t.common.clear}
         </button>
       )}
     </div>

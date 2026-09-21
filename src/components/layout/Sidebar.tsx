@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -12,12 +12,17 @@ import {
   Scale,
   Shield,
   Bell,
+  GraduationCap,
   ChevronLeft,
   Menu,
   X,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { actionRepo } from "@/data/repositories";
 import { useI18n } from "@/i18n/I18nContext";
+import { useDarkMode } from "@/contexts/DarkModeContext";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -28,6 +33,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Scale,
   Shield,
   Bell,
+  GraduationCap,
 };
 
 const NAV_ITEMS = [
@@ -39,13 +45,30 @@ const NAV_ITEMS = [
   { href: "/legal-compliance", label: "nav.legal", icon: "Scale" },
   { href: "/risks", label: "nav.risks", icon: "Shield" },
   { href: "/alerts", label: "nav.alerts", icon: "Bell" },
+  { href: "/training", label: "nav.training", icon: "GraduationCap" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("sidebar-collapsed") === "true";
+    }
+    return false;
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [overdueCount, setOverdueCount] = useState(0);
   const { t, language, setLanguage } = useI18n();
+  const { darkMode, toggleDarkMode } = useDarkMode();
+
+  useEffect(() => {
+    try {
+      const actions = actionRepo.findAll({ status: "all", standard: "all", department: "all", period: "all" });
+      setOverdueCount(actions.filter((a) => a.status === "overdue").length);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const getLabel = (key: string) => {
     const keys = key.split(".");
@@ -64,8 +87,9 @@ export default function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="fixed left-4 top-4 z-50 rounded-xl bg-slate-950 p-2 text-white shadow-lg lg:hidden"
+        aria-label="Menu"
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
 
       {/* Mobile overlay */}
@@ -79,20 +103,20 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-slate-200 bg-white transition-all duration-300",
+          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-300",
           collapsed ? "w-[72px]" : "w-[260px]",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-4">
+        <div className="flex h-16 items-center gap-3 border-b border-slate-100 dark:border-slate-700 px-4">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-700 to-indigo-950 text-xs font-black text-white">
             ISO
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-slate-900">ISO Progress</p>
-              <p className="text-[10px] text-slate-400">Command Center</p>
+              <p className="truncate text-sm font-bold text-slate-900 dark:text-white">{t.logo.title}</p>
+              <p className="text-[10px] text-slate-400">{t.logo.subtitle}</p>
             </div>
           )}
           {/* Mobile close */}
@@ -115,15 +139,21 @@ export default function Sidebar() {
                   <Link
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
                       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                       active
                         ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                     )}
                   >
                     {Icon && <Icon className={cn("h-5 w-5 shrink-0", active ? "text-blue-600" : "text-slate-400")} />}
                     {!collapsed && <span className="truncate">{getLabel(item.label)}</span>}
+                    {!collapsed && item.href === "/alerts" && overdueCount > 0 && (
+                      <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                        {overdueCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
@@ -132,24 +162,36 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer area */}
-        <div className="border-t border-slate-100 p-3">
+        <div className="border-t border-slate-100 dark:border-slate-700 p-3">
           {/* Collapse toggle (desktop only) */}
           <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700 lg:flex"
+            onClick={() => {
+              const next = !collapsed;
+              setCollapsed(next);
+              localStorage.setItem("sidebar-collapsed", String(next));
+            }}
+            className="hidden w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 lg:flex"
           >
             <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
             {!collapsed && <span>{t.common.collapse}</span>}
           </button>
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+          >
+            {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {!collapsed && <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>}
+          </button>
           {/* Language Switcher */}
-          <div className="mt-2 flex items-center justify-center gap-1 rounded-xl bg-slate-100 p-1">
+          <div className="mt-2 flex items-center justify-center gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
             <button
               onClick={() => setLanguage("th")}
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                 language === "th"
-                  ? "bg-white text-blue-700 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-400 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
               )}
             >
               TH
@@ -159,8 +201,8 @@ export default function Sidebar() {
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                 language === "en"
-                  ? "bg-white text-blue-700 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "bg-white dark:bg-slate-700 text-blue-700 dark:text-blue-400 shadow-sm"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
               )}
             >
               EN

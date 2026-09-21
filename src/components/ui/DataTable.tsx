@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronUp, ChevronDown, Search } from "lucide-react";
+import { useI18n } from "@/i18n/I18nContext";
 
 export interface Column<T = Record<string, unknown>> {
   key: string;
@@ -26,9 +27,12 @@ export default function DataTable<T extends Record<string, unknown>>({
   data,
   onRowClick,
   searchable = true,
-  searchPlaceholder = "Search...",
-  emptyMessage = "No data found",
+  searchPlaceholder,
+  emptyMessage,
 }: DataTableProps<T>) {
+  const { t } = useI18n();
+  const resolvedSearchPlaceholder = searchPlaceholder || t.common.search;
+  const resolvedEmptyMessage = emptyMessage || t.common.noResults;
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -72,7 +76,7 @@ export default function DataTable<T extends Record<string, unknown>>({
   return (
     <div>
       {searchable && (
-        <div className="mb-4">
+        <div className="mb-4" role="search">
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
@@ -81,7 +85,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={searchPlaceholder}
+              placeholder={resolvedSearchPlaceholder}
               className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
@@ -90,11 +94,14 @@ export default function DataTable<T extends Record<string, unknown>>({
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
+          <caption className="sr-only">{search ? `Search results for: ${search}` : "Data table"}</caption>
           <thead>
             <tr className="border-b border-slate-100">
               {columns.map((col) => (
                 <th
                   key={col.key}
+                  scope="col"
+                  aria-sort={sortKey === col.key ? (sortDir === "asc" ? "ascending" : "descending") : undefined}
                   className={cn(
                     "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500",
                     col.sortable && "cursor-pointer select-none hover:text-slate-700",
@@ -116,7 +123,7 @@ export default function DataTable<T extends Record<string, unknown>>({
             {filteredData.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="px-4 py-12 text-center text-sm text-slate-400">
-                  {emptyMessage}
+                  {resolvedEmptyMessage}
                 </td>
               </tr>
             ) : (
@@ -142,7 +149,7 @@ export default function DataTable<T extends Record<string, unknown>>({
       </div>
 
       <div className="mt-3 text-xs text-slate-400">
-        Showing {filteredData.length} of {data.length} records
+        {t.common.showing.replace("{filtered}", String(filteredData.length)).replace("{total}", String(data.length))}
       </div>
     </div>
   );

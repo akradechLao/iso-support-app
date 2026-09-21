@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "@/hooks/useFilters";
 import { auditRepo } from "@/data/repositories";
@@ -13,13 +13,21 @@ import DataTable, { Column } from "@/components/ui/DataTable";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { Audit } from "@/types";
-import { ClipboardCheck, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { ClipboardCheck, TrendingUp, Clock, CheckCircle, Download, Plus } from "lucide-react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
 
 export default function AuditDashboard() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const kpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
   const audits = useMemo(() => auditRepo.findAll(filters), [filters]);
@@ -71,6 +79,8 @@ export default function AuditDashboard() {
     },
   ];
 
+  if (loading) return <LoadingSpinner fullPage />;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1540px]">
@@ -81,7 +91,17 @@ export default function AuditDashboard() {
               {t.audits.subtitle}
             </p>
           </div>
-          <FilterBar filters={filters} onChange={setFilters} departments={departments} />
+          <div className="flex items-center gap-2">
+            <FilterBar filters={filters} onChange={setFilters} departments={departments} />
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+              <Download className="h-4 w-4" />
+              {t.common.export}
+            </button>
+            <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+              <Plus className="h-4 w-4" />
+              {t.common.addNew}
+            </button>
+          </div>
         </div>
 
         {/* KPI Cards */}

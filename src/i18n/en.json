@@ -7,7 +7,8 @@
     "ncrCar": "NCR / CAR",
     "legal": "Legal Compliance",
     "risks": "Risk & Opportunity",
-    "alerts": "Alert & Action"
+    "alerts": "Alert & Action",
+    "training": "Training"
   },
   "dashboard": {
     "title": "Executive Dashboard",
@@ -243,6 +244,24 @@
     "overdue": "overdue",
     "complete": "complete",
     "healthy": "Healthy",
-    "needsAttention": "Needs Attention"
+    "needsAttention": "Needs Attention",
+    "allStandards": "All Standards",
+    "allDepartments": "All Departments",
+    "allStatus": "All Status",
+    "allTime": "All Time",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "yearToDate": "Year to Date",
+    "clear": "Clear",
+    "showing": "Showing {filtered} of {total} records",
+    "records": "records",
+    "page": "Page",
+    "noResults": "No results found",
+    "addNew": "Add New",
+    "bulkActions": "Bulk Actions"
+  },
+  "logo": {
+    "title": "ISO Progress",
+    "subtitle": "Command Center"
   }
 }

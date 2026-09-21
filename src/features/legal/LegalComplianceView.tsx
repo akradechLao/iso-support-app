@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "@/hooks/useFilters";
 import { legalRepo } from "@/data/repositories";
@@ -12,13 +12,21 @@ import DataTable, { Column } from "@/components/ui/DataTable";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { LegalRequirement } from "@/types";
-import { Scale, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Scale, CheckCircle, XCircle, Clock, Download, Plus } from "lucide-react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
 
 export default function LegalComplianceView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const kpis = useMemo(() => legalRepo.getKpis(filters), [filters]);
   const legal = useMemo(() => legalRepo.findAll(filters), [filters]);
@@ -53,6 +61,8 @@ export default function LegalComplianceView() {
     },
   ];
 
+  if (loading) return <LoadingSpinner fullPage />;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1540px]">
@@ -63,7 +73,17 @@ export default function LegalComplianceView() {
               {t.legal.subtitle}
             </p>
           </div>
-          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+          <div className="flex items-center gap-2">
+            <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+              <Download className="h-4 w-4" />
+              {t.common.export}
+            </button>
+            <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+              <Plus className="h-4 w-4" />
+              {t.common.addNew}
+            </button>
+          </div>
         </div>
 
         {/* KPI Cards */}

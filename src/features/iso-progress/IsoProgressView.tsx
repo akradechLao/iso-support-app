@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { useFilters } from "@/hooks/useFilters";
 import { auditRepo, actionRepo } from "@/data/repositories";
 import { clauses } from "@/data/mock/clauses";
@@ -11,12 +12,33 @@ import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
 
 export default function IsoProgressView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+  const [expandedClauses, setExpandedClauses] = useState<Set<string>>(new Set());
+
+  const toggleClause = (clauseId: string) => {
+    setExpandedClauses((prev) => {
+      const next = new Set(prev);
+      if (next.has(clauseId)) {
+        next.delete(clauseId);
+      } else {
+        next.add(clauseId);
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const audits = useMemo(() => auditRepo.findAll(filters), [filters]);
   const actions = useMemo(() => actionRepo.findAll(filters), [filters]);
@@ -41,6 +63,8 @@ export default function IsoProgressView() {
       };
     });
   }, [audits]);
+
+  if (loading) return <LoadingSpinner fullPage />;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -88,36 +112,48 @@ export default function IsoProgressView() {
               <div key={std.id}>
                 <h3 className="mb-3 text-sm font-bold text-slate-700">{std.code} — {std.name}</h3>
                 <div className="space-y-2">
-                  {std.clauses.map((clause) => (
-                    <div key={clause.id} className="rounded-xl border border-slate-100 p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="rounded-lg bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
-                            {clause.code}
-                          </span>
-                          <span className="text-sm font-medium text-slate-700">{clause.title}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {clause.childClauses.length > 0 && (
+                  {std.clauses.map((clause) => {
+                    const isExpanded = expandedClauses.has(clause.id);
+                    const hasChildren = clause.childClauses.length > 0;
+                    return (
+                      <div key={clause.id} className="rounded-xl border border-slate-100">
+                        <div
+                          className={`flex items-center justify-between p-3 ${hasChildren ? "cursor-pointer hover:bg-slate-50 transition-colors" : ""}`}
+                          onClick={hasChildren ? () => toggleClause(clause.id) : undefined}
+                        >
+                          <div className="flex items-center gap-3">
+                            {hasChildren ? (
+                              <ChevronRight
+                                className={`h-4 w-4 text-slate-400 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+                              />
+                            ) : (
+                              <span className="w-4" />
+                            )}
+                            <span className="rounded-lg bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
+                              {clause.code}
+                            </span>
+                            <span className="text-sm font-medium text-slate-700">{clause.title}</span>
+                          </div>
+                          {hasChildren && (
                             <span className="text-xs text-slate-400">
                               {clause.childClauses.length} {t.isoProgress.subClauses}
                             </span>
                           )}
                         </div>
+                        {hasChildren && isExpanded && (
+                          <div className="space-y-1 border-t border-slate-50 px-8 pb-3 pt-2">
+                            {clause.childClauses.map((child) => (
+                              <div key={child.id} className="flex items-center gap-2 text-xs text-slate-500">
+                                <span className="h-1 w-1 rounded-full bg-slate-300" />
+                                <span className="font-medium text-slate-600">{child.code}</span>
+                                <span>{child.title}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {clause.childClauses.length > 0 && (
-                        <div className="mt-2 space-y-1 pl-8">
-                          {clause.childClauses.map((child) => (
-                            <div key={child.id} className="flex items-center gap-2 text-xs text-slate-500">
-                              <span className="h-1 w-1 rounded-full bg-slate-300" />
-                              <span className="font-medium text-slate-600">{child.code}</span>
-                              <span>{child.title}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}

@@ -7,7 +7,8 @@
     "ncrCar": "NCR / CAR",
     "legal": "กฎหมายที่เกี่ยวข้อง",
     "risks": "ความเสี่ยงและโอกาส",
-    "alerts": "แจ้งเตือนและดำเนินการ"
+    "alerts": "แจ้งเตือนและดำเนินการ",
+    "training": "ฝึกอบรม"
   },
   "dashboard": {
     "title": "แดชบอร์ดผู้บริหาร",
@@ -243,6 +244,24 @@
     "overdue": "เลยกำหนด",
     "complete": "เสร็จสิ้น",
     "healthy": "ปกติ",
-    "needsAttention": "ต้องสนใจ"
+    "needsAttention": "ต้องสนใจ",
+    "allStandards": "มาตรฐานทั้งหมด",
+    "allDepartments": "แผนกทั้งหมด",
+    "allStatus": "สถานะทั้งหมด",
+    "allTime": "ทุกช่วงเวลา",
+    "last30Days": "30 วันล่าสุด",
+    "last90Days": "90 วันล่าสุด",
+    "yearToDate": "ปีปัจจุบัน",
+    "clear": "ล้างตัวกรอง",
+    "showing": "แสดง {filtered} จาก {total} รายการ",
+    "records": "รายการ",
+    "page": "หน้า",
+    "noResults": "ไม่พบผลลัพธ์",
+    "addNew": "เพิ่มใหม่",
+    "bulkActions": "จัดการหลายรายการ"
+  },
+  "logo": {
+    "title": "ISO Progress",
+    "subtitle": "ศูนย์บัญชาการ"
   }
 }

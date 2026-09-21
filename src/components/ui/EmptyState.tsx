@@ -1,48 +1,43 @@
-import { FileX, SearchX, AlertCircle } from "lucide-react";
+"use client";
+
+import { useI18n } from "@/i18n/I18nContext";
+import { Inbox } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
-  variant?: "no-data" | "no-results" | "error";
+  icon?: React.ComponentType<{ className?: string }>;
   title?: string;
   description?: string;
+  action?: React.ReactNode;
+  className?: string;
 }
 
-const variants = {
-  "no-data": {
-    icon: FileX,
-    title: "No data available",
-    description: "There are no records to display yet.",
-  },
-  "no-results": {
-    icon: SearchX,
-    title: "No results found",
-    description: "Try adjusting your search or filter criteria.",
-  },
-  error: {
-    icon: AlertCircle,
-    title: "Something went wrong",
-    description: "An error occurred while loading the data.",
-  },
-};
-
 export default function EmptyState({
-  variant = "no-data",
+  icon: Icon = Inbox,
   title,
   description,
+  action,
+  className,
 }: EmptyStateProps) {
-  const config = variants[variant];
-  const Icon = config.icon;
+  const { t } = useI18n();
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-2xl bg-slate-100">
-        <Icon className="h-8 w-8 text-slate-400" />
+    <div
+      className={cn(
+        "flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-6 py-12 text-center",
+        className
+      )}
+    >
+      <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-slate-100">
+        <Icon className="h-7 w-7 text-slate-400" />
       </div>
-      <h3 className="mt-4 text-base font-semibold text-slate-700">
-        {title || config.title}
+      <h3 className="mb-1 text-sm font-semibold text-slate-700">
+        {title || t.common.noData}
       </h3>
-      <p className="mt-1 max-w-sm text-sm text-slate-400">
-        {description || config.description}
-      </p>
+      {description && (
+        <p className="mb-4 max-w-sm text-xs text-slate-500">{description}</p>
+      )}
+      {action && <div>{action}</div>}
     </div>
   );
 }

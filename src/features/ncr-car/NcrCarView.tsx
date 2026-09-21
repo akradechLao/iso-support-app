@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "@/hooks/useFilters";
 import { actionRepo } from "@/data/repositories";
@@ -10,8 +10,10 @@ import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { CorrectiveAction } from "@/types";
-import { AlertTriangle, Clock, CheckCircle, AlertCircle, Eye } from "lucide-react";
+import { AlertTriangle, Clock, CheckCircle, AlertCircle, Eye, Download, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
 
 type ViewMode = "kanban" | "list";
@@ -21,6 +23,13 @@ export default function NcrCarView() {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const KANBAN_COLUMNS = [
     { key: "open", label: t.status.open, statuses: ["open", "pending", "planned"] },
@@ -40,6 +49,25 @@ export default function NcrCarView() {
     return actions.filter((a) => col.statuses.includes(a.status));
   };
 
+  const handleDragStart = (e: React.DragEvent, actionId: string) => {
+    e.dataTransfer.setData("text/plain", actionId);
+    setDraggedId(actionId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, _targetStatus: string) => {
+    e.preventDefault();
+    const actionId = e.dataTransfer.getData("text/plain");
+    if (actionId) {
+      setDraggedId(null);
+    }
+  };
+
+  if (loading) return <LoadingSpinner fullPage />;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1540px]">
@@ -52,6 +80,16 @@ export default function NcrCarView() {
           </div>
           <div className="flex items-center gap-3">
             <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+                <Download className="h-4 w-4" />
+                {t.common.export}
+              </button>
+              <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+                <Plus className="h-4 w-4" />
+                {t.common.addNew}
+              </button>
+            </div>
             <div className="flex rounded-xl border border-slate-200 bg-white">
               <button
                 onClick={() => setViewMode("kanban")}
@@ -98,12 +136,25 @@ export default function NcrCarView() {
                         {colActions.length}
                       </span>
                     </div>
-                    <div className="space-y-2">
+                    <div
+                      className={cn(
+                        "space-y-2 rounded-xl p-1 transition",
+                        draggedId ? "ring-2 ring-blue-200 ring-offset-1" : ""
+                      )}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleDrop(e, col.statuses[0])}
+                    >
                       {colActions.map((action) => (
                         <button
                           key={action.id}
+                          draggable="true"
+                          onDragStart={(e) => handleDragStart(e, action.id)}
+                          onDragEnd={handleDragEnd}
                           onClick={() => router.push(`/ncr-car/${action.id}`)}
-                          className="w-full rounded-xl border border-slate-100 bg-white p-3 text-left shadow-sm transition hover:border-blue-200 hover:shadow-md"
+                          className={cn(
+                            "w-full rounded-xl border border-slate-100 bg-white p-3 text-left shadow-sm transition hover:border-blue-200 hover:shadow-md",
+                            draggedId === action.id ? "opacity-50" : ""
+                          )}
                         >
                           <div className="flex items-start justify-between">
                             <span className="text-xs font-bold text-slate-400">{action.referenceNo}</span>

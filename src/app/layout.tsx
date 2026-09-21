@@ -4,6 +4,7 @@ import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import { FilterProvider } from "@/hooks/useFilters";
 import { I18nProvider } from "@/i18n/I18nContext";
+import { DarkModeProvider } from "@/contexts/DarkModeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+    <html lang="th" className={`${geistSans.variable} ${geistMono.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full antialiased" style={{ fontFamily: "var(--font-geist-sans), Arial, Helvetica, sans-serif" }}>
         <I18nProvider>
-          <FilterProvider>
-            <AppShell>{children}</AppShell>
-          </FilterProvider>
+          <DarkModeProvider>
+            <FilterProvider>
+              <AppShell>{children}</AppShell>
+            </FilterProvider>
+          </DarkModeProvider>
         </I18nProvider>
       </body>
     </html>

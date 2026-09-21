@@ -1,23 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "@/hooks/useFilters";
 import { documentRepo } from "@/data/repositories";
 import { departments } from "@/data/mock/departments";
+import { users } from "@/data/mock/users";
 import KPICard from "@/components/ui/KPICard";
 import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
 import DataTable, { Column } from "@/components/ui/DataTable";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { DocumentRecord } from "@/types";
-import { FileText, Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import { FileText, Clock, CheckCircle, AlertTriangle, Download, Plus } from "lucide-react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
 
 export default function DocumentControlView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const kpis = useMemo(() => documentRepo.getKpis(filters), [filters]);
   const documents = useMemo(() => documentRepo.findAll(filters), [filters]);
@@ -40,7 +49,7 @@ export default function DocumentControlView() {
     {
       key: "ownerId",
       header: t.documents.owner,
-      render: (item) => item.ownerId,
+      render: (item) => users.find((u) => u.id === item.ownerId)?.name || item.ownerId,
     },
     { key: "reviewDate", header: t.documents.reviewDate, sortable: true },
     {
@@ -49,6 +58,8 @@ export default function DocumentControlView() {
       render: (item) => <StatusBadge status={item.approvalStatus} />,
     },
   ];
+
+  if (loading) return <LoadingSpinner fullPage />;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -60,7 +71,17 @@ export default function DocumentControlView() {
               {t.documents.subtitle}
             </p>
           </div>
-          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+          <div className="flex items-center gap-2">
+            <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+              <Download className="h-4 w-4" />
+              {t.common.export}
+            </button>
+            <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+              <Plus className="h-4 w-4" />
+              {t.common.addNew}
+            </button>
+          </div>
         </div>
 
         {/* KPI Cards */}

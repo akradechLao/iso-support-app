@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilters } from "@/hooks/useFilters";
 import { actionRepo, documentRepo, auditRepo, legalRepo, riskRepo } from "@/data/repositories";
 import { departments } from "@/data/mock/departments";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import EmptyState from "@/components/ui/EmptyState";
 import KPICard from "@/components/ui/KPICard";
 import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
@@ -28,6 +30,13 @@ export default function ExecutiveDashboard() {
   const router = useRouter();
   const { t } = useI18n();
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
   const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters]);
   const auditKpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
@@ -36,6 +45,22 @@ export default function ExecutiveDashboard() {
   const heatmapData = useMemo(() => riskRepo.getHeatmapData(), []);
 
   const overdueActions = useMemo(() => actionRepo.findOverdue(), []);
+
+  const standardCompletionRates = useMemo(() => {
+    const standards = ["9001", "14001", "45001"];
+    return standards.map((standardId) => {
+      const auditsForStandard = auditRepo.findByStandard(standardId);
+      const completed = auditsForStandard.filter((a) => a.status === "closed").length;
+      const total = auditsForStandard.length;
+      const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+      return {
+        standard: standardId,
+        rate,
+        label: `ISO ${standardId}`,
+        color: standardId === "9001" ? "#2563eb" : standardId === "14001" ? "#10b981" : "#f59e0b",
+      };
+    });
+  }, []);
 
   const modulePerformance = useMemo(
     () => [
@@ -50,6 +75,12 @@ export default function ExecutiveDashboard() {
   const recentActions = useMemo(() => {
     return actionRepo.findAll(filters).slice(0, 8);
   }, [filters]);
+
+  if (loading) return <LoadingSpinner fullPage />;
+
+  if (!recentActions.length && !modulePerformance.length) {
+    return <EmptyState description={t.common.noData} />;
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -149,9 +180,14 @@ export default function ExecutiveDashboard() {
               </div>
 
               <div className="space-y-4 pb-4">
-                <ProgressBar label="ISO 9001" value={91} color="#2563eb" />
-                <ProgressBar label="ISO 14001" value={84} color="#10b981" />
-                <ProgressBar label="ISO 45001" value={86} color="#f59e0b" />
+                {standardCompletionRates.map((standard) => (
+                  <ProgressBar
+                    key={standard.standard}
+                    label={standard.label}
+                    value={standard.rate}
+                    color={standard.color}
+                  />
+                ))}
               </div>
             </div>
 

@@ -9,7 +9,7 @@ import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/utils";
-import { Bell, AlertTriangle, Clock, CheckCircle } from "lucide-react";
+import { Bell, AlertTriangle, Clock, CheckCircle, Download, Plus } from "lucide-react";
 import { useI18n } from "@/i18n/I18nContext";
 
 export default function AlertCenterView() {
@@ -39,7 +39,17 @@ export default function AlertCenterView() {
               {t.alerts.subtitle}
             </p>
           </div>
-          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+          <div className="flex items-center gap-2">
+            <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+              <Download className="h-4 w-4" />
+              {t.common.export}
+            </button>
+            <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+              <Plus className="h-4 w-4" />
+              {t.common.addNew}
+            </button>
+          </div>
         </div>
 
         {/* Summary Cards */}

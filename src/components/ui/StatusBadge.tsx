@@ -1,6 +1,9 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Status } from "@/types";
-import { STATUS_LABELS, STATUS_COLORS } from "@/lib/constants";
+import { STATUS_COLORS } from "@/lib/constants";
+import { useI18n } from "@/i18n/I18nContext";
 
 interface StatusBadgeProps {
   status: Status;
@@ -8,8 +11,9 @@ interface StatusBadgeProps {
 }
 
 export default function StatusBadge({ status, size = "sm" }: StatusBadgeProps) {
+  const { t } = useI18n();
   const colors = STATUS_COLORS[status] || STATUS_COLORS.draft;
-  const label = STATUS_LABELS[status] || status;
+  const label = (t.status as Record<string, string>)[status] || status;
 
   return (
     <span
