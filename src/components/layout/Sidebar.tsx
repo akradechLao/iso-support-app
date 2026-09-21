@@ -131,6 +131,17 @@ export default function Sidebar() {
           </ul>
         </nav>
 
+        {/* Collapse toggle (desktop only) */}
+        <div className="hidden border-t border-slate-100 p-3 lg:block">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+          >
+            <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
+            {!collapsed && <span>{t.common.collapse}</span>}
+          </button>
+        </div>
+
         {/* Language Switcher */}
         <div className="border-t border-slate-100 p-3">
           <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
@@ -157,17 +168,6 @@ export default function Sidebar() {
               EN
             </button>
           </div>
-        </div>
-
-        {/* Collapse toggle (desktop only) */}
-        <div className="hidden border-t border-slate-100 p-3 lg:block">
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-          >
-            <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
-            {!collapsed && <span>{t.common.collapse}</span>}
-          </button>
         </div>
       </aside>
     </div>
