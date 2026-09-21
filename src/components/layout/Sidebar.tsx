@@ -45,7 +45,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { t } = useI18n();
+  const { t, language, setLanguage } = useI18n();
 
   const getLabel = (key: string) => {
     const keys = key.split(".");
@@ -59,7 +59,7 @@ export default function Sidebar() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <>
+    <div>
       {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(true)}
@@ -131,6 +131,34 @@ export default function Sidebar() {
           </ul>
         </nav>
 
+        {/* Language Switcher */}
+        <div className="border-t border-slate-100 p-3">
+          <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+            <button
+              onClick={() => setLanguage("th")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                language === "th"
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              )}
+            >
+              TH
+            </button>
+            <button
+              onClick={() => setLanguage("en")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                language === "en"
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              )}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+
         {/* Collapse toggle (desktop only) */}
         <div className="hidden border-t border-slate-100 p-3 lg:block">
           <button
@@ -142,6 +170,6 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
-    </>
+    </div>
   );
 }
