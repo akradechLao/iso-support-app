@@ -83,9 +83,9 @@ export const NAV_ITEMS = [
   { href: "/dashboard", label: "Executive Dashboard", icon: "LayoutDashboard" },
   { href: "/iso-progress", label: "ISO Progress", icon: "GitBranch" },
   { href: "/documents", label: "Document Control", icon: "FileText" },
-  { href: "/audits", label: "Internal Audit", icon: "ClipboardCheck" },
+  { href: "/audits", label: "การตรวจประเมินภายใน", icon: "ClipboardCheck" },
   { href: "/ncr-car", label: "NCR / CAR", icon: "AlertTriangle" },
-  { href: "/legal-compliance", label: "Legal Compliance", icon: "Scale" },
+  { href: "/legal-compliance", label: "การประเมินความสอดคล้องกับกฎหมาย", icon: "Scale" },
   { href: "/risks", label: "Risk & Opportunity", icon: "Shield" },
   { href: "/alerts", label: "Alert & Action", icon: "Bell" },
 ] as const;

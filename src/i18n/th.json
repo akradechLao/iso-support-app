@@ -3,9 +3,9 @@
     "dashboard": "แดชบอร์ดผู้บริหาร",
     "isoProgress": "ความคืบหน้า ISO",
     "documents": "ควบคุมเอกสาร",
-    "audits": "การตรวจภายใน",
+    "audits": "การตรวจประเมินภายใน",
     "ncrCar": "NCR / CAR",
-    "legal": "กฎหมายที่เกี่ยวข้อง",
+    "legal": "การประเมินความสอดคล้องกับกฎหมาย",
     "risks": "ความเสี่ยงและโอกาส",
     "alerts": "แจ้งเตือนและดำเนินการ",
     "training": "ฝึกอบรม"
@@ -45,14 +45,14 @@
     "pendingApproval": "รออนุมัติ",
     "obsolete": "เลิกใช้แล้ว",
     "viewAllDocuments": "ดูเอกสารทั้งหมด →",
-    "legalCompliance": "กฎหมายที่เกี่ยวข้อง",
+    "legalCompliance": "การประเมินความสอดคล้องกับกฎหมาย",
     "complianceStatusOverview": "ภาพรวมสถานะการปฏิบัติตาม",
     "compliant": "สอดคล้อง",
     "nonCompliant": "ไม่สอดคล้อง",
     "pending": "รอดำเนินการ",
     "overallCompliance": "อัตราการปฏิบัติตามรวม",
     "viewLegalRegister": "ดูทะเบียนกฎหมาย →",
-    "internalAudit": "การตรวจภายใน",
+    "internalAudit": "การตรวจประเมินภายใน",
     "auditPlanAndFindings": "แผนการตรวจและผลการตรวจ",
     "completed": "เสร็จสิ้น",
     "planned": "วางแผนแล้ว",
@@ -93,7 +93,7 @@
     "approval": "การอนุมัติ"
   },
   "audits": {
-    "title": "การตรวจภายใน",
+    "title": "การตรวจประเมินภายใน",
     "subtitle": "ความคืบหน้าแผนการตรวจ ขอบเขต และการวิเคราะห์ผลการตรวจ",
     "auditCompletion": "ความคืบหน้าการตรวจ",
     "auditCompletionSubtitle": "{completed}/{total} การตรวจ",
@@ -138,7 +138,7 @@
     "due": "ครบกำหนด:"
   },
   "legal": {
-    "title": "กฎหมายที่เกี่ยวข้อง",
+    "title": "การประเมินความสอดคล้องกับกฎหมาย",
     "subtitle": "ติดตามข้อกำหนดทางกฎหมายและสถานะการปฏิบัติตาม",
     "totalRequirements": "ข้อกำหนดทั้งหมด",
     "compliant": "สอดคล้อง",

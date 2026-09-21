@@ -3,7 +3,7 @@ import { FileText, CheckCircle, ClipboardCheck, AlertTriangle, AlertCircle, Wren
 const steps = [
   { icon: FileText, title: "DOCUMENT", subtitle: "เอกสารและระเบียบปฏิบัติ" },
   { icon: CheckCircle, title: "APPROVAL", subtitle: "การอนุมัติ" },
-  { icon: ClipboardCheck, title: "AUDIT", subtitle: "การตรวจสอบภายใน" },
+  { icon: ClipboardCheck, title: "AUDIT", subtitle: "การตรวจประเมินภายใน" },
   { icon: AlertTriangle, title: "FINDING", subtitle: "พบร่องรอย/ข้อผิดพลาด" },
   { icon: AlertCircle, title: "NCR/CAR", subtitle: "การแก้ไขและป้องกัน" },
   { icon: Wrench, title: "ACTION", subtitle: "การดำเนินการแก้ไข" },

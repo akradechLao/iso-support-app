@@ -223,7 +223,7 @@ export default function ExecutiveDashboard() {
           </div>
         </div>
 
-        {/* Row 2: Document Control + Document Revision + Internal Audit */}
+        {/* Row 2: Document Control + Document Revision + การตรวจประเมินภายใน */}
         <div className="mb-6 grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {/* Section 2: Document Control */}
           <Panel title="Document Control" subtitle="ควบคุมเอกสาร">
@@ -289,8 +289,8 @@ export default function ExecutiveDashboard() {
             </div>
           </Panel>
 
-          {/* Section 4: Internal Audit */}
-          <Panel title="Internal Audit" subtitle="การตรวจสอบภายใน">
+          {/* Section 4: การตรวจประเมินภายใน */}
+          <Panel title="การตรวจประเมินภายใน" subtitle="Internal Audit">
             <div className="mt-4">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="rounded-lg bg-blue-50 dark:bg-blue-900/30 p-2">
@@ -472,8 +472,8 @@ export default function ExecutiveDashboard() {
             </div>
           </Panel>
 
-          {/* Section 9: Legal Compliance */}
-          <Panel title="Legal Compliance" subtitle="สรุปผลการปฏิบัติตามกฎหมาย">
+          {/* Section 9: การประเมินความสอดคล้องกับกฎหมาย */}
+          <Panel title="การประเมินความสอดคล้องกับกฎหมาย" subtitle="Legal Compliance">
             <div className="mt-4">
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <DonutChart
