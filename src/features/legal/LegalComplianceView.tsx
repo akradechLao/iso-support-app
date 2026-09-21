@@ -68,14 +68,14 @@ export default function LegalComplianceView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.legal.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.legal.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {t.legal.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
-            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">
               <Download className="h-4 w-4" />
               {t.common.export}
             </button>
@@ -115,17 +115,17 @@ export default function LegalComplianceView() {
           <Panel title={t.legal.overallComplianceStatus} subtitle={t.legal.summaryOfAllRequirements}>
             <div className="mt-4">
               <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-xl bg-emerald-50 p-4 text-center">
-                  <p className="text-3xl font-black text-emerald-700">{kpis.comply}</p>
-                  <p className="mt-1 text-xs font-medium text-emerald-600">{t.legal.compliant}</p>
+                <div className="rounded-xl bg-emerald-50 dark:bg-emerald-900/30 p-4 text-center">
+                  <p className="text-3xl font-black text-emerald-700 dark:text-emerald-300">{kpis.comply}</p>
+                  <p className="mt-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">{t.legal.compliant}</p>
                 </div>
-                <div className="rounded-xl bg-red-50 p-4 text-center">
-                  <p className="text-3xl font-black text-red-700">{kpis.nonComply}</p>
-                  <p className="mt-1 text-xs font-medium text-red-600">{t.legal.nonCompliant}</p>
+                <div className="rounded-xl bg-red-50 dark:bg-red-900/30 p-4 text-center">
+                  <p className="text-3xl font-black text-red-700 dark:text-red-300">{kpis.nonComply}</p>
+                  <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{t.legal.nonCompliant}</p>
                 </div>
-                <div className="rounded-xl bg-amber-50 p-4 text-center">
-                  <p className="text-3xl font-black text-amber-700">{kpis.pending}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">{t.legal.pendingAssessment}</p>
+                <div className="rounded-xl bg-amber-50 dark:bg-amber-900/30 p-4 text-center">
+                  <p className="text-3xl font-black text-amber-700 dark:text-amber-300">{kpis.pending}</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">{t.legal.pendingAssessment}</p>
                 </div>
               </div>
               <div className="mt-6">

@@ -27,7 +27,7 @@ export default function LoadingSpinner({
         className={`${sizeClasses[size]} animate-spin rounded-full border-slate-200 border-t-blue-600`}
       />
       {(message || size !== "sm") && (
-        <p className="text-sm text-slate-500">{message || t.common.loading}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{message || t.common.loading}</p>
       )}
     </div>
   );

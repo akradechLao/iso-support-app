@@ -86,14 +86,14 @@ export default function AuditDashboard() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.audits.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.audits.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {t.audits.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <FilterBar filters={filters} onChange={setFilters} departments={departments} />
-            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">
               <Download className="h-4 w-4" />
               {t.common.export}
             </button>
@@ -191,11 +191,11 @@ export default function AuditDashboard() {
                   <button
                     key={audit.id}
                     onClick={() => router.push(`/audits/${audit.id}`)}
-                    className="flex w-full items-center gap-3 rounded-xl border border-slate-100 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/50"
+                    className="flex w-full items-center gap-3 rounded-xl border border-slate-100 dark:border-slate-700 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-700/50"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-700">{audit.title}</p>
-                      <p className="mt-1 text-xs text-slate-400">{audit.plannedDate}</p>
+                      <p className="truncate text-sm font-semibold text-slate-700 dark:text-slate-200">{audit.title}</p>
+                      <p className="mt-1 text-xs text-slate-400 dark:text-slate-400">{audit.plannedDate}</p>
                     </div>
                     <StatusBadge status={audit.status} />
                   </button>

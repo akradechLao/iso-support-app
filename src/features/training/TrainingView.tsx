@@ -46,27 +46,27 @@ export default function TrainingView() {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-950">Training Management</h1>
-          <p className="mt-1 text-sm text-slate-500">Track training programs, attendance and compliance</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">Training Management</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Track training programs, attendance and compliance</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50"><GraduationCap className="h-5 w-5 text-blue-600" /></div>
-              <div><p className="text-xs text-slate-500">Total Training</p><p className="text-xl font-bold text-slate-900">{mockTrainings.length}</p></div>
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 dark:bg-blue-900/30"><GraduationCap className="h-5 w-5 text-blue-600 dark:text-blue-400" /></div>
+              <div><p className="text-xs text-slate-500 dark:text-slate-400">Total Training</p><p className="text-xl font-bold text-slate-900 dark:text-white">{mockTrainings.length}</p></div>
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50"><BookOpen className="h-5 w-5 text-emerald-600" /></div>
-              <div><p className="text-xs text-slate-500">Completed</p><p className="text-xl font-bold text-slate-900">{completed}</p></div>
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30"><BookOpen className="h-5 w-5 text-emerald-600 dark:text-emerald-400" /></div>
+              <div><p className="text-xs text-slate-500 dark:text-slate-400">Completed</p><p className="text-xl font-bold text-slate-900 dark:text-white">{completed}</p></div>
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-50"><Users className="h-5 w-5 text-amber-600" /></div>
-              <div><p className="text-xs text-slate-500">Planned</p><p className="text-xl font-bold text-slate-900">{planned}</p></div>
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 dark:bg-amber-900/30"><Users className="h-5 w-5 text-amber-600 dark:text-amber-400" /></div>
+              <div><p className="text-xs text-slate-500 dark:text-slate-400">Planned</p><p className="text-xl font-bold text-slate-900 dark:text-white">{planned}</p></div>
             </div>
           </div>
         </div>

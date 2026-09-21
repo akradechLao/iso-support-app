@@ -16,9 +16,9 @@ interface KPICardProps {
 }
 
 const statusStyles = {
-  good: "border-emerald-200 bg-emerald-50/50",
-  warning: "border-amber-200 bg-amber-50/50",
-  danger: "border-red-200 bg-red-50/50",
+  good: "border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/30",
+  warning: "border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/30",
+  danger: "border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/30",
 };
 
 export default function KPICard({
@@ -34,18 +34,18 @@ export default function KPICard({
   const content = (
     <div
       className={cn(
-        "rounded-2xl border bg-white p-5 shadow-sm transition-all hover:shadow-md",
+        "rounded-2xl border bg-white dark:bg-slate-800 dark:border-slate-700 p-5 shadow-sm transition-all hover:shadow-md",
         href && "cursor-pointer hover:border-blue-200",
         status && statusStyles[status]
       )}
     >
       <div className="flex items-start justify-between">
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-medium text-slate-500">{title}</p>
-          <p className="mt-2 text-3xl font-black tracking-tight text-slate-950">{value}</p>
-          {subtitle && <p className="mt-1 text-xs text-slate-400">{subtitle}</p>}
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{title}</p>
+          <p className="mt-2 text-3xl font-black tracking-tight text-slate-950 dark:text-white">{value}</p>
+          {subtitle && <p className="mt-1 text-xs text-slate-400 dark:text-slate-400">{subtitle}</p>}
         </div>
-        {icon && <div className="shrink-0 text-slate-300">{icon}</div>}
+        {icon && <div className="shrink-0 text-slate-300 dark:text-slate-400">{icon}</div>}
       </div>
       {(trend || trendValue) && (
         <div className="mt-3 flex items-center gap-1.5">

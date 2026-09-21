@@ -86,7 +86,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={resolvedSearchPlaceholder}
-              className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function DataTable<T extends Record<string, unknown>>({
                   scope="col"
                   aria-sort={sortKey === col.key ? (sortDir === "asc" ? "ascending" : "descending") : undefined}
                   className={cn(
-                    "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500",
+                    "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400",
                     col.sortable && "cursor-pointer select-none hover:text-slate-700",
                     col.className
                   )}
@@ -122,7 +122,7 @@ export default function DataTable<T extends Record<string, unknown>>({
           <tbody>
             {filteredData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-sm text-slate-400">
+                <td colSpan={columns.length} className="px-4 py-12 text-center text-sm text-slate-400 dark:text-slate-400">
                   {resolvedEmptyMessage}
                 </td>
               </tr>
@@ -131,7 +131,7 @@ export default function DataTable<T extends Record<string, unknown>>({
                 <tr
                   key={idx}
                   className={cn(
-                    "border-b border-slate-50 transition-colors hover:bg-blue-50/30",
+                    "border-b border-slate-50 dark:border-slate-700 transition-colors hover:bg-blue-50/30 dark:hover:bg-slate-700/50",
                     onRowClick && "cursor-pointer"
                   )}
                   onClick={() => onRowClick?.(item)}
@@ -148,7 +148,7 @@ export default function DataTable<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      <div className="mt-3 text-xs text-slate-400">
+      <div className="mt-3 text-xs text-slate-400 dark:text-slate-400">
         {t.common.showing.replace("{filtered}", String(filteredData.length)).replace("{total}", String(data.length))}
       </div>
     </div>

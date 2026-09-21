@@ -88,8 +88,8 @@ export default function ExecutiveDashboard() {
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.dashboard.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">{t.dashboard.subtitle}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.dashboard.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.dashboard.subtitle}</p>
           </div>
           <FilterBar filters={filters} onChange={setFilters} departments={departments} />
         </div>
@@ -193,24 +193,24 @@ export default function ExecutiveDashboard() {
 
             <div className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">{t.dashboard.openNcrCar}</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-400">{t.dashboard.openNcrCar}</p>
                 <p className="mt-1 text-xl font-black">{actionKpis.open}</p>
                 <p className="mt-1 text-[11px] text-rose-300">{actionKpis.overdue} {t.common.overdue}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">{t.dashboard.legalCompliance}</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-400">{t.dashboard.legalCompliance}</p>
                 <p className="mt-1 text-xl font-black">{legalKpis.complianceRate}%</p>
-                <p className="mt-1 text-[11px] text-slate-400">{legalKpis.nonComply} {t.dashboard.nonCompliant}</p>
+                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-400">{legalKpis.nonComply} {t.dashboard.nonCompliant}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">{t.audits.auditCompletion}</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-400">{t.audits.auditCompletion}</p>
                 <p className="mt-1 text-xl font-black">{auditKpis.completionRate}%</p>
-                <p className="mt-1 text-[11px] text-slate-400">{auditKpis.completed} / {auditKpis.total} {t.common.complete}</p>
+                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-400">{auditKpis.completed} / {auditKpis.total} {t.common.complete}</p>
               </div>
               <div className="p-3.5">
-                <p className="text-[11px] text-slate-400">{t.dashboard.documentStatus}</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-400">{t.dashboard.documentStatus}</p>
                 <p className="mt-1 text-xl font-black">{documentKpis.active}</p>
-                <p className="mt-1 text-[11px] text-slate-400">{documentKpis.dueReview} {t.dashboard.dueReview}</p>
+                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-400">{documentKpis.dueReview} {t.dashboard.dueReview}</p>
               </div>
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function ExecutiveDashboard() {
                 <button
                   key={action.id}
                   onClick={() => router.push(`/ncr-car/${action.id}`)}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-slate-100 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/50"
+                  className="flex w-full items-center gap-3 rounded-2xl border border-slate-100 dark:border-slate-700 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-700/50"
                 >
                   <span
                     className={`h-10 w-1 rounded-full ${
@@ -235,7 +235,7 @@ export default function ExecutiveDashboard() {
                   />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold">{action.title}</span>
-                    <span className="mt-1 block text-xs text-slate-500">
+                    <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
                       {action.id} · {departments.find((d) => d.id === action.departmentId)?.name}
                     </span>
                   </span>
@@ -271,7 +271,7 @@ export default function ExecutiveDashboard() {
                 }}
               />
             </div>
-            <p className="mt-5 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">
+            <p className="mt-5 rounded-xl bg-rose-50 dark:bg-rose-900/30 p-3 text-sm text-rose-800 dark:text-rose-200">
               <b>{t.dashboard.highRisksNeedPlan.replace("{count}", String(riskKpis.high))}</b>
             </p>
           </Panel>
@@ -280,8 +280,8 @@ export default function ExecutiveDashboard() {
           <Panel title={t.dashboard.documentStatus} subtitle={t.dashboard.documentControlOverview}>
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-600">{t.dashboard.activeDocuments}</span>
-                <span className="font-bold text-slate-900">{documentKpis.active}</span>
+                <span className="text-slate-600 dark:text-slate-300">{t.dashboard.activeDocuments}</span>
+                <span className="font-bold text-slate-900 dark:text-white">{documentKpis.active}</span>
               </div>
               <ProgressBar label={t.dashboard.published} value={documentKpis.active} max={documentKpis.total} color="#2563eb" />
               <ProgressBar label={t.dashboard.dueReview} value={documentKpis.dueReview} max={documentKpis.total} color="#f59e0b" />
@@ -303,17 +303,17 @@ export default function ExecutiveDashboard() {
           <Panel title={t.dashboard.legalCompliance} subtitle={t.dashboard.complianceStatusOverview}>
             <div className="mt-5">
               <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-xl bg-emerald-50 p-4 text-center">
-                  <p className="text-2xl font-black text-emerald-700">{legalKpis.comply}</p>
-                  <p className="mt-1 text-xs font-medium text-emerald-600">{t.dashboard.compliant}</p>
+                <div className="rounded-xl bg-emerald-50 dark:bg-emerald-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-emerald-700 dark:text-emerald-300">{legalKpis.comply}</p>
+                  <p className="mt-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">{t.dashboard.compliant}</p>
                 </div>
-                <div className="rounded-xl bg-red-50 p-4 text-center">
-                  <p className="text-2xl font-black text-red-700">{legalKpis.nonComply}</p>
-                  <p className="mt-1 text-xs font-medium text-red-600">{t.dashboard.nonCompliant}</p>
+                <div className="rounded-xl bg-red-50 dark:bg-red-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-red-700 dark:text-red-300">{legalKpis.nonComply}</p>
+                  <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{t.dashboard.nonCompliant}</p>
                 </div>
-                <div className="rounded-xl bg-amber-50 p-4 text-center">
-                  <p className="text-2xl font-black text-amber-700">{legalKpis.pending}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">{t.dashboard.pending}</p>
+                <div className="rounded-xl bg-amber-50 dark:bg-amber-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-amber-700 dark:text-amber-300">{legalKpis.pending}</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">{t.dashboard.pending}</p>
                 </div>
               </div>
               <div className="mt-5">
@@ -337,17 +337,17 @@ export default function ExecutiveDashboard() {
           <Panel title={t.dashboard.internalAudit} subtitle={t.dashboard.auditPlanAndFindings}>
             <div className="mt-5">
               <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-xl bg-blue-50 p-4 text-center">
-                  <p className="text-2xl font-black text-blue-700">{auditKpis.completed}</p>
-                  <p className="mt-1 text-xs font-medium text-blue-600">{t.dashboard.completed}</p>
+                <div className="rounded-xl bg-blue-50 dark:bg-blue-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-blue-700 dark:text-blue-300">{auditKpis.completed}</p>
+                  <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">{t.dashboard.completed}</p>
                 </div>
-                <div className="rounded-xl bg-amber-50 p-4 text-center">
-                  <p className="text-2xl font-black text-amber-700">{auditKpis.planned}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-600">{t.dashboard.planned}</p>
+                <div className="rounded-xl bg-amber-50 dark:bg-amber-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-amber-700 dark:text-amber-300">{auditKpis.planned}</p>
+                  <p className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">{t.dashboard.planned}</p>
                 </div>
-                <div className="rounded-xl bg-violet-50 p-4 text-center">
-                  <p className="text-2xl font-black text-violet-700">{auditKpis.inProgress}</p>
-                  <p className="mt-1 text-xs font-medium text-violet-600">{t.dashboard.inProgress}</p>
+                <div className="rounded-xl bg-violet-50 dark:bg-violet-900/30 p-4 text-center">
+                  <p className="text-2xl font-black text-violet-700 dark:text-violet-300">{auditKpis.inProgress}</p>
+                  <p className="mt-1 text-xs font-medium text-violet-600 dark:text-violet-400">{t.dashboard.inProgress}</p>
                 </div>
               </div>
               <div className="mt-5">

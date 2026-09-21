@@ -71,8 +71,8 @@ export default function IsoProgressView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.isoProgress.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.isoProgress.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {t.isoProgress.subtitle}
             </p>
           </div>
@@ -91,13 +91,13 @@ export default function IsoProgressView() {
                   size="lg"
                 />
                 <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div className="rounded-xl bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">{t.isoProgress.clauses}</p>
-                    <p className="mt-1 font-bold text-slate-900">{std.clauseCount}</p>
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-800 p-3">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t.isoProgress.clauses}</p>
+                    <p className="mt-1 font-bold text-slate-900 dark:text-white">{std.clauseCount}</p>
                   </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">{t.isoProgress.audits}</p>
-                    <p className="mt-1 font-bold text-slate-900">{std.completedAudits}/{std.auditCount}</p>
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-800 p-3">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t.isoProgress.audits}</p>
+                    <p className="mt-1 font-bold text-slate-900 dark:text-white">{std.completedAudits}/{std.auditCount}</p>
                   </div>
                 </div>
               </div>
@@ -110,42 +110,42 @@ export default function IsoProgressView() {
           <div className="mt-4 space-y-4">
             {clauseData.map((std) => (
               <div key={std.id}>
-                <h3 className="mb-3 text-sm font-bold text-slate-700">{std.code} — {std.name}</h3>
+                <h3 className="mb-3 text-sm font-bold text-slate-700 dark:text-slate-200">{std.code} — {std.name}</h3>
                 <div className="space-y-2">
                   {std.clauses.map((clause) => {
                     const isExpanded = expandedClauses.has(clause.id);
                     const hasChildren = clause.childClauses.length > 0;
                     return (
-                      <div key={clause.id} className="rounded-xl border border-slate-100">
+                      <div key={clause.id} className="rounded-xl border border-slate-100 dark:border-slate-700">
                         <div
-                          className={`flex items-center justify-between p-3 ${hasChildren ? "cursor-pointer hover:bg-slate-50 transition-colors" : ""}`}
+                          className={`flex items-center justify-between p-3 ${hasChildren ? "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" : ""}`}
                           onClick={hasChildren ? () => toggleClause(clause.id) : undefined}
                         >
                           <div className="flex items-center gap-3">
                             {hasChildren ? (
                               <ChevronRight
-                                className={`h-4 w-4 text-slate-400 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+                                className={`h-4 w-4 text-slate-400 dark:text-slate-400 transition-transform ${isExpanded ? "rotate-90" : ""}`}
                               />
                             ) : (
                               <span className="w-4" />
                             )}
-                            <span className="rounded-lg bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
+                            <span className="rounded-lg bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-bold text-blue-700 dark:text-blue-300">
                               {clause.code}
                             </span>
-                            <span className="text-sm font-medium text-slate-700">{clause.title}</span>
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{clause.title}</span>
                           </div>
                           {hasChildren && (
-                            <span className="text-xs text-slate-400">
+                            <span className="text-xs text-slate-400 dark:text-slate-400">
                               {clause.childClauses.length} {t.isoProgress.subClauses}
                             </span>
                           )}
                         </div>
                         {hasChildren && isExpanded && (
-                          <div className="space-y-1 border-t border-slate-50 px-8 pb-3 pt-2">
+                          <div className="space-y-1 border-t border-slate-50 dark:border-slate-700 px-8 pb-3 pt-2">
                             {clause.childClauses.map((child) => (
-                              <div key={child.id} className="flex items-center gap-2 text-xs text-slate-500">
-                                <span className="h-1 w-1 rounded-full bg-slate-300" />
-                                <span className="font-medium text-slate-600">{child.code}</span>
+                              <div key={child.id} className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+                                <span className="font-medium text-slate-600 dark:text-slate-300">{child.code}</span>
                                 <span>{child.title}</span>
                               </div>
                             ))}

@@ -13,7 +13,7 @@ const getCellColor = (score: number): string => {
   if (score >= 10) return "bg-orange-400 text-white";
   if (score >= 5) return "bg-amber-400 text-amber-950";
   if (score > 0) return "bg-emerald-400 text-emerald-950";
-  return "bg-slate-100 text-slate-400";
+  return "bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500";
 };
 
 export default function RiskHeatmap({
@@ -29,7 +29,7 @@ export default function RiskHeatmap({
       {showLabels && (
         <div className="mb-2 flex items-center">
           <div className="w-20" />
-          <div className="flex-1 text-center text-xs font-semibold text-slate-500">
+          <div className="flex-1 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
             Impact →
           </div>
         </div>
@@ -41,7 +41,7 @@ export default function RiskHeatmap({
             return (
               <div key={`${likelihoodIdx}-${impactIdx}`} className="contents">
                 {showLabels && impactIdx === 0 && (
-                  <div className="flex items-center justify-end pr-2 text-[10px] font-medium text-slate-500">
+                  <div className="flex items-center justify-end pr-2 text-[10px] font-medium text-slate-500 dark:text-slate-400">
                     {likelihoodLabels[likelihoodIdx]}
                   </div>
                 )}
@@ -63,7 +63,7 @@ export default function RiskHeatmap({
         <div className="mt-2 grid gap-1" style={{ gridTemplateColumns: "auto repeat(5, 1fr)" }}>
           <div className="w-20" />
           {impactLabels.map((label) => (
-            <div key={label} className="text-center text-[10px] font-medium text-slate-500">
+            <div key={label} className="text-center text-[10px] font-medium text-slate-500 dark:text-slate-400">
               {label}
             </div>
           ))}

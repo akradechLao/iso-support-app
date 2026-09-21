@@ -75,14 +75,14 @@ export default function RiskRegisterView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.risks.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.risks.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {t.risks.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
-            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">
               <Download className="h-4 w-4" />
               {t.common.export}
             </button>
@@ -127,7 +127,7 @@ export default function RiskRegisterView() {
                 <ProgressBar label={`${t.risks.lowRisk} (${kpis.low})`} value={kpis.low} max={kpis.total} color="#10b981" />
               </div>
             </div>
-            <div className="mt-6 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">
+            <div className="mt-6 rounded-xl bg-rose-50 dark:bg-rose-900/30 p-3 text-sm text-rose-800 dark:text-rose-200">
               <b>{t.risks.highRisksNeedPlan.replace("{count}", String(kpis.high))}</b>
             </div>
           </Panel>

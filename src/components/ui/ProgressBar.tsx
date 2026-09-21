@@ -31,11 +31,11 @@ export default function ProgressBar({
     <div className={cn("w-full", className)}>
       {(label || showValue) && (
         <div className="mb-1.5 flex items-center justify-between text-sm">
-          {label && <span className="font-semibold text-slate-700">{label}</span>}
-          {showValue && <span className="font-bold text-slate-900">{percentage}%</span>}
+          {label && <span className="font-semibold text-slate-700 dark:text-slate-300">{label}</span>}
+          {showValue && <span className="font-bold text-slate-900 dark:text-white">{percentage}%</span>}
         </div>
       )}
-      <div className={cn("overflow-hidden rounded-full bg-slate-100", sizeStyles[size])}>
+      <div className={cn("overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700", sizeStyles[size])}>
         <div
           className={cn("rounded-full transition-all duration-500", sizeStyles[size])}
           style={{ width: `${percentage}%`, backgroundColor: color }}

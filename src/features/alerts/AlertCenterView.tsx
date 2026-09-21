@@ -34,14 +34,14 @@ export default function AlertCenterView() {
       <div className="mx-auto max-w-[1540px]">
         <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">{t.alerts.title}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{t.alerts.title}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {t.alerts.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
-            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <button className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">
               <Download className="h-4 w-4" />
               {t.common.export}
             </button>
@@ -57,7 +57,7 @@ export default function AlertCenterView() {
           <Panel title={t.alerts.overdueActions} subtitle={t.alerts.requireImmediateAttention}>
             <div className="mt-4">
               <p className="text-3xl font-black text-red-600">{overdueActions.length}</p>
-              <p className="mt-1 text-sm text-slate-500">{t.alerts.actionsPastDue}</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.alerts.actionsPastDue}</p>
             </div>
           </Panel>
           <Panel title={t.alerts.criticalPriority} subtitle={t.alerts.highestSeverity}>
@@ -65,7 +65,7 @@ export default function AlertCenterView() {
               <p className="text-3xl font-black text-orange-600">
                 {actions.filter((a) => a.priority === "critical").length}
               </p>
-              <p className="mt-1 text-sm text-slate-500">{t.alerts.criticalItems}</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.alerts.criticalItems}</p>
             </div>
           </Panel>
           <Panel title={t.alerts.pendingVerification} subtitle={t.alerts.awaitingVerification}>
@@ -73,7 +73,7 @@ export default function AlertCenterView() {
               <p className="text-3xl font-black text-blue-600">
                 {actions.filter((a) => a.status === "action_in_progress" || a.status === "follow_up").length}
               </p>
-              <p className="mt-1 text-sm text-slate-500">{t.alerts.actionsInProgress}</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.alerts.actionsInProgress}</p>
             </div>
           </Panel>
         </div>
@@ -88,8 +88,8 @@ export default function AlertCenterView() {
                   key={action.id}
                   onClick={() => router.push(`/ncr-car/${action.id}`)}
                   className={cn(
-                    "flex w-full items-center gap-4 rounded-xl border p-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30",
-                    isOverdue ? "border-red-200 bg-red-50/30" : "border-slate-100"
+                    "flex w-full items-center gap-4 rounded-xl border p-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30 dark:hover:bg-slate-700/50",
+                    isOverdue ? "border-red-200 dark:border-red-800 bg-red-50/30 dark:bg-red-900/20" : "border-slate-100 dark:border-slate-700"
                   )}
                 >
                   <span
@@ -104,16 +104,16 @@ export default function AlertCenterView() {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-400">{action.referenceNo}</span>
+                      <span className="text-xs font-bold text-slate-400 dark:text-slate-400">{action.referenceNo}</span>
                       <StatusBadge status={action.status} />
                       {isOverdue && (
-                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">
+                        <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:text-red-300">
                           {t.alerts.overdue}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 truncate text-sm font-medium text-slate-700">{action.title}</p>
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 truncate text-sm font-medium text-slate-700 dark:text-slate-200">{action.title}</p>
+                    <p className="mt-1 text-xs text-slate-400 dark:text-slate-400">
                       {departments.find((d) => d.id === action.departmentId)?.name} · {t.ncrCar.due} {action.dueDate}
                     </p>
                   </div>
@@ -121,12 +121,12 @@ export default function AlertCenterView() {
                     className={cn(
                       "rounded-full px-2.5 py-1 text-xs font-bold",
                       action.priority === "critical"
-                        ? "bg-red-100 text-red-700"
+                        ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
                         : action.priority === "high"
-                        ? "bg-orange-100 text-orange-700"
+                        ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300"
                         : action.priority === "medium"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-emerald-100 text-emerald-700"
+                        ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                        : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
                     )}
                   >
                     {t.priority[action.priority]}
