@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: "ISO management, compliance and corrective action tracking",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
