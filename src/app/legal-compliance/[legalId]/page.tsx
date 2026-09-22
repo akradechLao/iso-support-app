@@ -11,7 +11,7 @@ import { ArrowLeft, Scale, Building, FileText } from "lucide-react";
 export default function LegalDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = params.legalId as string;
+  const id = (params?.legalId ?? "") as string;
 
   const legal = useMemo(() => legalRepo.findById(id), [id]);
 

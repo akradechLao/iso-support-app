@@ -12,7 +12,7 @@ interface TopbarProps {
 export default function Topbar({ title, actions }: TopbarProps) {
   const pathname = usePathname();
 
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = (pathname || "").split("/").filter(Boolean);
   const breadcrumbs = segments.map((segment, index) => {
     const href = "/" + segments.slice(0, index + 1).join("/");
     const label = segment

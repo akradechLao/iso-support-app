@@ -12,7 +12,7 @@ import { ArrowLeft, Calendar, User, Building, AlertTriangle } from "lucide-react
 export default function CarDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = params.carId as string;
+  const id = (params?.carId ?? "") as string;
 
   const action = useMemo(() => actionRepo.findById(id), [id]);
   const finding = useMemo(() => {

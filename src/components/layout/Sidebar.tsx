@@ -79,7 +79,7 @@ export default function Sidebar() {
     return (typeof value === "string" ? value : key);
   };
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
 
   return (
     <>

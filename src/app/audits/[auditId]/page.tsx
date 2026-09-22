@@ -13,7 +13,7 @@ import { ArrowLeft, Calendar, User, Building, ClipboardCheck } from "lucide-reac
 export default function AuditDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = params.auditId as string;
+  const id = (params?.auditId ?? "") as string;
 
   const audit = useMemo(() => auditRepo.findById(id), [id]);
 

@@ -12,7 +12,7 @@ import { ArrowLeft, FileText, Calendar, User, Building } from "lucide-react";
 export default function DocumentDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = params.docId as string;
+  const id = (params?.docId ?? "") as string;
 
   const doc = useMemo(() => documentRepo.findById(id), [id]);
 

@@ -12,7 +12,7 @@ import { ArrowLeft, Shield, Building, User, AlertTriangle } from "lucide-react";
 export default function RiskDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = params.riskId as string;
+  const id = (params?.riskId ?? "") as string;
 
   const risk = useMemo(() => riskRepo.findById(id), [id]);
 
