@@ -83,11 +83,13 @@ export const NAV_ITEMS = [
   { href: "/dashboard", label: "Executive Dashboard", icon: "LayoutDashboard" },
   { href: "/iso-progress", label: "ISO Progress", icon: "GitBranch" },
   { href: "/documents", label: "Document Control", icon: "FileText" },
+  { href: "/document-revision", label: "การแก้ไขและอนุมัติเอกสาร", icon: "FileCheck2" },
   { href: "/audits", label: "การตรวจประเมินภายใน", icon: "ClipboardCheck" },
   { href: "/ncr-car", label: "NCR / CAR", icon: "AlertTriangle" },
   { href: "/legal-compliance", label: "การประเมินความสอดคล้องกับกฎหมาย", icon: "Scale" },
   { href: "/risks", label: "Risk & Opportunity", icon: "Shield" },
   { href: "/alerts", label: "Alert & Action", icon: "Bell" },
+  { href: "/training", label: "Training", icon: "GraduationCap" },
 ] as const;
 
 export const DATE_FORMATS = {

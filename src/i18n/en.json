@@ -3,6 +3,7 @@
     "dashboard": "Executive Dashboard",
     "isoProgress": "ISO Progress",
     "documents": "Document Control",
+    "documentRevision": "Document Revision & Approval",
     "audits": "Internal Audit",
     "ncrCar": "NCR / CAR",
     "legal": "Legal Compliance",
@@ -169,6 +170,10 @@
     "newDocumentTitle": "Add New Document",
     "requiredField": "Required",
     "documentAdded": "Document added successfully"
+  },
+  "documentRevision": {
+    "queueTitle": "Pending revision / approval queue",
+    "emptyQueue": "No documents pending revision or approval"
   },
   "audits": {
     "title": "Internal Audit",

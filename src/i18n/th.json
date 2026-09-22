@@ -3,6 +3,7 @@
     "dashboard": "แดชบอร์ดผู้บริหาร",
     "isoProgress": "ความคืบหน้า ISO",
     "documents": "ควบคุมเอกสาร",
+    "documentRevision": "การแก้ไขและอนุมัติเอกสาร",
     "audits": "การตรวจประเมินภายใน",
     "ncrCar": "NCR / CAR",
     "legal": "การประเมินความสอดคล้องกับกฎหมาย",
@@ -169,6 +170,10 @@
     "newDocumentTitle": "เพิ่มเอกสารใหม่",
     "requiredField": "จำเป็น",
     "documentAdded": "เพิ่มเอกสารเรียบร้อยแล้ว"
+  },
+  "documentRevision": {
+    "queueTitle": "รายการรอแก้ไข / รออนุมัติ",
+    "emptyQueue": "ไม่มีรายการรอแก้ไขหรือรออนุมัติ"
   },
   "audits": {
     "title": "การตรวจประเมินภายใน",

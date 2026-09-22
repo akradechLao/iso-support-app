@@ -553,7 +553,7 @@ export default function ExecutiveDashboard() {
           <Panel
             title={t.dashboard.documentRevisionTitle}
             subtitle={t.dashboard.documentRevisionSub}
-            action={<DrillDownLink href="/documents" label={t.common.view} />}
+            action={<DrillDownLink href="/document-revision" label={t.common.view} />}
           >
             <div className="mt-4 flex flex-col items-center">
               <DonutChart

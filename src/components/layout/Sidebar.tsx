@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   GitBranch,
   FileText,
+  FileCheck2,
   ClipboardCheck,
   AlertTriangle,
   Scale,
@@ -28,6 +29,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
   GitBranch,
   FileText,
+  FileCheck2,
   ClipboardCheck,
   AlertTriangle,
   Scale,
@@ -40,6 +42,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "nav.dashboard", icon: "LayoutDashboard" },
   { href: "/iso-progress", label: "nav.isoProgress", icon: "GitBranch" },
   { href: "/documents", label: "nav.documents", icon: "FileText" },
+  { href: "/document-revision", label: "nav.documentRevision", icon: "FileCheck2" },
   { href: "/audits", label: "nav.audits", icon: "ClipboardCheck" },
   { href: "/ncr-car", label: "nav.ncrCar", icon: "AlertTriangle" },
   { href: "/legal-compliance", label: "nav.legal", icon: "Scale" },
@@ -76,7 +79,7 @@ export default function Sidebar() {
     for (const k of keys) {
       value = (value as Record<string, unknown>)?.[k];
     }
-    return (typeof value === "string" ? value : key);
+    return typeof value === "string" ? value : key;
   };
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
@@ -131,26 +134,57 @@ export default function Sidebar() {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           <ul className="space-y-1">
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.map((item, index) => {
               const Icon = ICONS[item.icon];
               const active = isActive(item.href);
+              const number = index + 1;
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     aria-current={active ? "page" : undefined}
+                    title={collapsed ? `${number}. ${getLabel(item.label)}` : undefined}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+                      "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200",
                       active
-                        ? "bg-blue-50 text-blue-700"
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                     )}
                   >
-                    {Icon && <Icon className={cn("h-5 w-5 shrink-0", active ? "text-blue-600" : "text-slate-400")} />}
-                    {!collapsed && <span className="truncate">{getLabel(item.label)}</span>}
+                    {collapsed ? (
+                      <span
+                        className={cn(
+                          "grid h-5 w-5 shrink-0 place-items-center rounded-md text-[10px] font-bold",
+                          active
+                            ? "bg-blue-600 text-white"
+                            : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                        )}
+                      >
+                        {number}
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          className={cn(
+                            "grid h-6 w-6 shrink-0 place-items-center rounded-lg text-[11px] font-bold",
+                            active
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                          )}
+                        >
+                          {number}
+                        </span>
+                        <span className="truncate">{getLabel(item.label)}</span>
+                      </>
+                    )}
                     {!collapsed && item.href === "/alerts" && overdueCount > 0 && (
                       <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                        {overdueCount}
+                      </span>
+                    )}
+                    {collapsed && item.href === "/alerts" && overdueCount > 0 && (
+                      <span className="absolute -top-0.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
                         {overdueCount}
                       </span>
                     )}
