@@ -169,7 +169,13 @@
     "addDocument": "Add Document",
     "newDocumentTitle": "Add New Document",
     "requiredField": "Required",
-    "documentAdded": "Document added successfully"
+    "documentAdded": "Document added successfully",
+    "dccPath": "DCC file path",
+    "dccPathPlaceholder": "e.g. 10_ISO.../QP-001.pdf or https://...",
+    "dccPathHint": "Path or URL of the source file on app.etc1992.com/dcc",
+    "openDcc": "Open in DCC",
+    "sourceFile": "Source file (DCC)",
+    "noDccLink": "Source file not set yet"
   },
   "documentRevision": {
     "queueTitle": "Pending revision / approval queue",

@@ -5,6 +5,7 @@ export type CreateDocumentInput = Omit<
   "id" | "createdAt" | "updatedAt" | "clauseIds"
 > & {
   clauseIds?: string[];
+  dccPath?: string;
 };
 
 export interface DocumentRepository {

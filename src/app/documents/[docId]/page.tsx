@@ -6,8 +6,8 @@ import { documentRepo } from "@/data/repositories";
 import { departments } from "@/data/mock/departments";
 import Panel from "@/components/ui/Panel";
 import StatusBadge from "@/components/ui/StatusBadge";
-import ProgressBar from "@/components/ui/ProgressBar";
-import { ArrowLeft, FileText, Calendar, User, Building } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, User, Building, ExternalLink, FolderOpen } from "lucide-react";
+import { resolveDccUrl, hasDccLink, DCC_BASE_URL } from "@/lib/dcc";
 
 export default function DocumentDetailPage() {
   const params = useParams();
@@ -103,6 +103,44 @@ export default function DocumentDetailPage() {
               <p className="mt-1 font-semibold text-slate-900">{doc.updatedAt}</p>
             </div>
           </div>
+        </Panel>
+
+        <Panel title="Source file (DCC)" className="mt-4">
+          {hasDccLink(doc.dccPath) ? (
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <FolderOpen className="h-4 w-4 shrink-0" />
+                  <span className="truncate font-mono text-xs text-slate-700">{doc.dccPath}</span>
+                </div>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  เอกสารต้นฉบับอยู่ที่ app.etc1992.com/dcc (ต้อง login ETC)
+                </p>
+              </div>
+              <a
+                href={resolveDccUrl(doc.dccPath) || DCC_BASE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                <ExternalLink className="h-4 w-4" />
+                เปิดใน DCC
+              </a>
+            </div>
+          ) : (
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-500">ยังไม่ได้ระบุไฟล์ต้นฉบับ</p>
+              <a
+                href={DCC_BASE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+              >
+                <ExternalLink className="h-4 w-4" />
+                เปิด DCC
+              </a>
+            </div>
+          )}
         </Panel>
 
         {doc.clauseIds.length > 0 && (

@@ -12,7 +12,8 @@ import DataTable, { Column } from "@/components/ui/DataTable";
 import StatusBadge from "@/components/ui/StatusBadge";
 import DonutChart from "@/components/charts/DonutChart";
 import { DocumentRecord } from "@/types";
-import { ArrowLeft, Clock, CheckCircle, AlertTriangle, FileText } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle, AlertTriangle, FileText, ExternalLink } from "lucide-react";
+import { resolveDccUrl } from "@/lib/dcc";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useI18n } from "@/i18n/I18nContext";
 
@@ -78,6 +79,26 @@ export default function DocumentRevisionView() {
       key: "approvalStatus",
       header: t.documents.approval,
       render: (item) => <StatusBadge status={item.approvalStatus} />,
+    },
+    {
+      key: "dccPath",
+      header: "DCC",
+      render: (item) => {
+        const href = resolveDccUrl(item.dccPath);
+        if (!href) return <span className="text-[11px] text-slate-400">—</span>;
+        return (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+          >
+            <ExternalLink className="h-3 w-3" />
+            {t.documents.openDcc}
+          </a>
+        );
+      },
     },
   ];
 

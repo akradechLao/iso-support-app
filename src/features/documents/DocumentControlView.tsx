@@ -13,7 +13,8 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import DonutChart from "@/components/charts/DonutChart";
 import Modal from "@/components/ui/Modal";
 import { DocumentRecord, Status } from "@/types";
-import { FileText, Clock, CheckCircle, AlertTriangle, ArrowLeft, Plus } from "lucide-react";
+import { FileText, Clock, CheckCircle, AlertTriangle, ArrowLeft, Plus, ExternalLink } from "lucide-react";
+import { resolveDccUrl, hasDccLink } from "@/lib/dcc";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useI18n } from "@/i18n/I18nContext";
 
@@ -36,6 +37,7 @@ export default function DocumentControlView() {
     reviewDate: "",
     status: "draft" as Status,
     approvalStatus: "draft" as Status,
+    dccPath: "",
   });
 
   useEffect(() => {
@@ -72,6 +74,26 @@ export default function DocumentControlView() {
       header: t.documents.approval,
       render: (item) => <StatusBadge status={item.approvalStatus} />,
     },
+    {
+      key: "dccPath",
+      header: "DCC",
+      render: (item) => {
+        const href = resolveDccUrl(item.dccPath);
+        if (!href) return <span className="text-[11px] text-slate-400">—</span>;
+        return (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60"
+          >
+            <ExternalLink className="h-3 w-3" />
+            {t.documents.openDcc}
+          </a>
+        );
+      },
+    },
   ];
 
   if (loading) return <LoadingSpinner fullPage />;
@@ -87,6 +109,7 @@ export default function DocumentControlView() {
       reviewDate: "",
       status: "draft",
       approvalStatus: "draft",
+      dccPath: "",
     });
     setShowAdd(true);
   };
@@ -104,6 +127,7 @@ export default function DocumentControlView() {
       reviewDate: form.reviewDate,
       approvalStatus: form.approvalStatus,
       clauseIds: [],
+      dccPath: form.dccPath.trim(),
     });
     setShowAdd(false);
     setVersion((v) => v + 1);
@@ -328,6 +352,20 @@ export default function DocumentControlView() {
                 <option value="closed">{t.status.closed}</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              {t.documents.dccPath}
+            </label>
+            <input
+              type="text"
+              value={form.dccPath}
+              onChange={(e) => setForm({ ...form, dccPath: e.target.value })}
+              placeholder={t.documents.dccPathPlaceholder}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+            <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{t.documents.dccPathHint}</p>
           </div>
         </div>
 

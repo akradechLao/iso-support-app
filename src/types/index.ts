@@ -69,6 +69,8 @@ export interface DocumentRecord {
   clauseIds: string[];
   createdAt: string;
   updatedAt: string;
+  /** Path or full URL of the source file in ETC DCC (app.etc1992.com) */
+  dccPath: string;
 }
 
 export interface Audit {

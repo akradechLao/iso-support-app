@@ -48,6 +48,7 @@ export class MockDocumentRepository implements DocumentRepository {
       ...input,
       id: nextId(),
       clauseIds: input.clauseIds ?? [],
+      dccPath: input.dccPath ?? "",
       createdAt: now,
       updatedAt: now,
     };

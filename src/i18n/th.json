@@ -169,7 +169,13 @@
     "addDocument": "เพิ่มเอกสาร",
     "newDocumentTitle": "เพิ่มเอกสารใหม่",
     "requiredField": "จำเป็น",
-    "documentAdded": "เพิ่มเอกสารเรียบร้อยแล้ว"
+    "documentAdded": "เพิ่มเอกสารเรียบร้อยแล้ว",
+    "dccPath": "ที่อยู่ไฟล์ใน DCC",
+    "dccPathPlaceholder": "เช่น 10_ISO.../QP-001.pdf หรือ https://...",
+    "dccPathHint": "วาง path หรือ URL ของไฟล์ต้นฉบับบน app.etc1992.com/dcc",
+    "openDcc": "เปิดใน DCC",
+    "sourceFile": "ไฟล์ต้นฉบับ (DCC)",
+    "noDccLink": "ยังไม่ได้ระบุไฟล์ต้นฉบับ"
   },
   "documentRevision": {
     "queueTitle": "รายการรอแก้ไข / รออนุมัติ",
