@@ -21,9 +21,9 @@ export class MockRiskRepository implements RiskRepository {
     return risks.find((r) => r.id === id) || null;
   }
 
-  getHeatmapData(): number[][] {
+  getHeatmapData(filters?: FilterState): number[][] {
     const grid: number[][] = Array.from({ length: 5 }, () => Array(5).fill(0));
-    risks.forEach((r) => {
+    this.findAll(filters).forEach((r) => {
       const lIdx = Math.min(r.likelihood - 1, 4);
       const iIdx = Math.min(r.impact - 1, 4);
       grid[lIdx][iIdx]++;

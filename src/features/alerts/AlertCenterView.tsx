@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nContext";
 import { isOverdue, parseDate } from "@/lib/date";
+import FilterBar from "@/components/ui/FilterBar";
 
 interface LogEntry {
   id: string;
@@ -55,7 +56,7 @@ interface ResolveModal {
 }
 
 export default function AlertCenterView() {
-  const { filters } = useFilters();
+  const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -240,10 +241,13 @@ export default function AlertCenterView() {
 
         {/* Header */}
         <div className="mb-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 p-5 shadow-lg shadow-indigo-500/20">
-          <h1 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-sm font-black">9</span>
-            ศูนย์แจ้งเตือน — Alert &amp; Action Center
-          </h1>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h1 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-sm font-black">9</span>
+              ศูนย์แจ้งเตือน — Alert &amp; Action Center
+            </h1>
+            <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+          </div>
         </div>
 
         {/* Stats */}

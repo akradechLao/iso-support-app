@@ -31,7 +31,7 @@ export default function RiskRegisterView() {
 
   const kpis = useMemo(() => riskRepo.getKpis(filters), [filters]);
   const risks = useMemo(() => riskRepo.findAll(filters), [filters]);
-  const heatmapData = useMemo(() => riskRepo.getHeatmapData(), []);
+  const heatmapData = useMemo(() => riskRepo.getHeatmapData(filters), [filters]);
 
   const donutData = useMemo(
     () => [
@@ -94,9 +94,14 @@ export default function RiskRegisterView() {
         {/* Colored Section Header */}
         <div className="mb-6 rounded-xl bg-gradient-to-r from-rose-600 to-rose-500 p-5 text-white shadow-lg shadow-rose-200 dark:shadow-rose-900/30">
           <h1 className="text-xl font-bold tracking-tight">
-            6 · ความเสี่ยงและโอกาส — Risk & Opportunity
+            6 · ความเสี่ยงและโอกาส — Risk &amp; Opportunity
           </h1>
         </div>
+
+        <div className="mb-4">
+          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
+        </div>
+
 
         {/* Compact Stat Boxes */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -16,6 +16,7 @@ import { Training, Status } from "@/types";
 import { GraduationCap, Users, BookOpen, TrendingUp, Plus, Download, CheckCircle, Pencil } from "lucide-react";
 import { downloadCsv } from "@/lib/export";
 import { thaiDateToIso, isoToThaiDate } from "@/lib/dateStamp";
+import FilterBar from "@/components/ui/FilterBar";
 
 const statBox = "rounded-xl border px-4 py-3 flex items-center gap-3 shadow-sm transition hover:shadow-md";
 const statIcon = "grid h-9 w-9 place-items-center rounded-lg shrink-0";
@@ -25,7 +26,7 @@ const statValue = "text-lg font-bold text-slate-900 dark:text-white";
 export default function TrainingView() {
   const { t } = useI18n();
   const router = useRouter();
-  const { filters } = useFilters();
+  const { filters, setFilters } = useFilters();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -191,6 +192,10 @@ export default function TrainingView() {
               </button>
             </div>
           </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
         </div>
 
         {/* Stat Boxes */}

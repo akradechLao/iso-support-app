@@ -14,6 +14,7 @@ import BarChart from "@/components/charts/BarChart";
 import { Audit } from "@/types";
 import { useI18n } from "@/i18n/I18nContext";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import FilterBar from "@/components/ui/FilterBar";
 
 export default function AuditDashboard() {
   const { filters, setFilters } = useFilters();
@@ -111,6 +112,10 @@ export default function AuditDashboard() {
           <h1 className="text-xl font-bold tracking-tight text-white">
             3 · การตรวจประเมินภายใน — Internal Audit
           </h1>
+        </div>
+
+        <div className="mb-4">
+          <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
         </div>
 
         {/* Stat Boxes */}

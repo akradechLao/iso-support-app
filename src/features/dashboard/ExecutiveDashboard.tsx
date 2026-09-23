@@ -71,12 +71,12 @@ export default function ExecutiveDashboard() {
   const auditKpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
   const legalKpis = useMemo(() => legalRepo.getKpis(filters), [filters, version]);
   const riskKpis = useMemo(() => riskRepo.getKpis(filters), [filters]);
-  const heatmapData = useMemo(() => riskRepo.getHeatmapData(), []);
+  const heatmapData = useMemo(() => riskRepo.getHeatmapData(filters), [filters]);
   const allActions = useMemo(() => actionRepo.findAll(filters), [filters, version]);
   const allAudits = useMemo(() => auditRepo.findAll(filters), [filters]);
   const allDocuments = useMemo(() => documentRepo.findAll(filters), [filters, version]);
-  const allTrainings = useMemo(() => trainingRepo.findAll(), [version]);
-  const recentActions = useMemo(() => allActions.slice(0, 6), [allActions]);
+  const allTrainings = useMemo(() => trainingRepo.findAll(filters), [filters, version]);
+  const isFiltered = filters.department !== "all" || filters.status !== "all" || filters.standard !== "all" || filters.period !== "all";
 
   const trainingKpis = useMemo(() => {
     const total = allTrainings.length;
@@ -109,7 +109,7 @@ export default function ExecutiveDashboard() {
   const standardCompletionRates = useMemo(() => {
     const standards = ["9001", "14001", "45001"];
     return standards.map((standardId) => {
-      const auditsForStandard = auditRepo.findByStandard(standardId);
+      const auditsForStandard = auditRepo.findAll({ ...filters, standard: standardId });
       const completed = auditsForStandard.filter(
         (a) => a.status === "closed"
       ).length;
@@ -127,7 +127,7 @@ export default function ExecutiveDashboard() {
             : "#f59e0b",
       };
     });
-  }, []);
+  }, [filters]);
 
   const monthlyTrendData = useMemo(() => {
     const months =
@@ -141,6 +141,14 @@ export default function ExecutiveDashboard() {
       compliance: 82 + Math.round(Math.sin(i / 3) * 5) + Math.floor(i / 2),
     }));
   }, [language]);
+
+  const hasAnyData =
+    documentKpis.total > 0 ||
+    actionKpis.total > 0 ||
+    auditKpis.total > 0 ||
+    legalKpis.total > 0 ||
+    riskKpis.total > 0 ||
+    trainingKpis.total > 0;
 
   const documentByType = useMemo(() => {
     return DOC_TYPES.map((type) => {
@@ -275,9 +283,6 @@ export default function ExecutiveDashboard() {
   );
 
   if (loading) return <LoadingSpinner fullPage />;
-  if (!recentActions.length) {
-    return <EmptyState description={t.common.noData} />;
-  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -312,6 +317,20 @@ export default function ExecutiveDashboard() {
             />
           </div>
         </div>
+
+        {!hasAnyData && (
+          <div className="mb-6">
+            <EmptyState
+              description={
+                isFiltered
+                  ? language === "th"
+                    ? "ไม่มีข้อมูลสำหรับตัวกรองที่เลือก — กด Clear เพื่อล้างตัวกรอง"
+                    : "No data for the selected filters — press Clear to reset"
+                  : t.common.noData
+              }
+            />
+          </div>
+        )}
 
         {/* Process Flow */}
         <Panel
@@ -400,28 +419,36 @@ export default function ExecutiveDashboard() {
             action={<DrillDownLink href="/iso-progress" label={t.common.view} />}
           >
             <div className="mt-4">
-              <TrendChart
-                data={monthlyTrendData}
-                xKey="month"
-                lines={[
-                  {
-                    key: "documents",
-                    color: "#2563eb",
-                    name: t.dashboard.activeDocumentsCard,
-                  },
-                  {
-                    key: "auditCompletion",
-                    color: "#f59e0b",
-                    name: t.dashboard.auditCompletion,
-                  },
-                  {
-                    key: "compliance",
-                    color: "#10b981",
-                    name: t.dashboard.complianceRate,
-                  },
-                ]}
-                height={280}
-              />
+              {isFiltered ? (
+                <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-4 py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                  {language === "th"
+                    ? "ไม่มีข้อมูลแนวโน้มรายเดือนสำหรับตัวกรองนี้"
+                    : "No monthly trend data for the current filters"}
+                </div>
+              ) : (
+                <TrendChart
+                  data={monthlyTrendData}
+                  xKey="month"
+                  lines={[
+                    {
+                      key: "documents",
+                      color: "#2563eb",
+                      name: t.dashboard.activeDocumentsCard,
+                    },
+                    {
+                      key: "auditCompletion",
+                      color: "#f59e0b",
+                      name: t.dashboard.auditCompletion,
+                    },
+                    {
+                      key: "compliance",
+                      color: "#10b981",
+                      name: t.dashboard.complianceRate,
+                    },
+                  ]}
+                  height={280}
+                />
+              )}
             </div>
           </Panel>
 
@@ -476,6 +503,13 @@ export default function ExecutiveDashboard() {
                     </tr>
                   </thead>
                   <tbody>
+                    {documentByType.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="py-6 text-center text-xs text-slate-400">
+                          {t.common.noData}
+                        </td>
+                      </tr>
+                    )}
                     {documentByType.map((row) => (
                       <tr
                         key={row.type}
@@ -782,6 +816,11 @@ export default function ExecutiveDashboard() {
                   {t.dashboard.trainingByDept}
                 </div>
                 <div className="mt-2 space-y-2">
+                  {trainingByDept.length === 0 && (
+                    <p className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 px-3 py-4 text-center text-xs text-slate-400 dark:text-slate-500">
+                      {t.common.noData}
+                    </p>
+                  )}
                   {trainingByDept.map((d) => (
                     <div
                       key={d.dept}
