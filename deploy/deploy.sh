@@ -19,9 +19,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-PROJECT_DIR="/www/wwwroot/iso-support-app"
-APP_DIR="${PROJECT_DIR}/app"
-BACKUP_DIR="/www/wwwbackups/iso-support-app"
+PROJECT_DIR="/www/wwwroot/iso-report.northernthai.co.th"
+APP_DIR="${PROJECT_DIR}"
+BACKUP_DIR="/www/wwwbackups/iso-report.northernthai.co.th"
 LOG_FILE="/www/wwwlogs/deploy-$(date +%Y%m%d-%H%M%S).log"
 
 # Functions

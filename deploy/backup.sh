@@ -16,10 +16,10 @@
 set -e
 
 # Configuration
-PROJECT_DIR="/www/wwwroot/iso-support-app"
+PROJECT_DIR="/www/wwwroot/iso-report.northernthai.co.th"
 APP_DIR="${PROJECT_DIR}/app"
 DB_DIR="${PROJECT_DIR}/data"
-BACKUP_BASE="/www/wwwbackups/iso-support-app"
+BACKUP_BASE="/www/wwwbackups/iso-report.northernthai.co.th"
 BACKUP_DIR="${BACKUP_BASE}/$(date +%Y%m%d-%H%M%S)"
 RETENTION_DAYS=30
 MAX_BACKUPS=10

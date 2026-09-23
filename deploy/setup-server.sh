@@ -132,7 +132,7 @@ fi
 # ===========================================
 
 log "Step 8: Installing dependencies and building..."
-cd /www/wwwroot/iso-support-app/app
+cd /www/wwwroot/iso-report.northernthai.co.th
 npm install
 npm run build
 success "Application built"
@@ -142,7 +142,7 @@ success "Application built"
 # ===========================================
 
 log "Step 9: Setting up PM2..."
-cd /www/wwwroot/iso-support-app/app
+cd /www/wwwroot/iso-report.northernthai.co.th
 pm2 start ecosystem.config.js
 pm2 save
 success "PM2 configured and started"

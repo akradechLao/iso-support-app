@@ -96,7 +96,7 @@ jobs:
             echo "🚀 ISO Support App - Production Deploy"
             echo "=========================================="
 
-            APP_DIR="/www/wwwroot/iso-support-app/app"
+            APP_DIR="/www/wwwroot/iso-report.northernthai.co.th"
 
             # Backup current build
             echo "💾 Backing up current build..."

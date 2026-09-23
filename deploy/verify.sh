@@ -65,10 +65,10 @@ main() {
     
     # App checks
     echo -e "${YELLOW}Application:${NC}"
-    check "App directory exists" "[ -d '/www/wwwroot/iso-support-app/app' ]"
-    check "node_modules exists" "[ -d '/www/wwwroot/iso-support-app/app/node_modules' ]"
-    check ".next build exists" "[ -d '/www/wwwroot/iso-support-app/app/.next' ]"
-    check "ecosystem.config.js exists" "[ -f '/www/wwwroot/iso-support-app/app/ecosystem.config.js' ]"
+    check "App directory exists" "[ -d '/www/wwwroot/iso-report.northernthai.co.th' ]"
+    check "node_modules exists" "[ -d '/www/wwwroot/iso-report.northernthai.co.th/node_modules' ]"
+    check ".next build exists" "[ -d '/www/wwwroot/iso-report.northernthai.co.th/.next' ]"
+    check "ecosystem.config.js exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/ecosystem.config.js' ]"
     echo ""
     
     # PM2 checks
@@ -92,16 +92,16 @@ main() {
     
     # Database checks
     echo -e "${YELLOW}Database:${NC}"
-    check "SQLite database exists" "[ -f '/www/wwwroot/iso-support-app/data/iso_progress.db' ]"
-    check "Database accessible" "sqlite3 /www/wwwroot/iso-support-app/data/iso_progress.db '.tables'"
+    check "SQLite database exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/data/iso_progress.db' ]"
+    check "Database accessible" "sqlite3 /www/wwwroot/iso-report.northernthai.co.th/data/iso_progress.db '.tables'"
     echo ""
     
     # Deploy scripts
     echo -e "${YELLOW}Deploy Scripts:${NC}"
-    check "monitor.sh exists" "[ -f '/www/wwwroot/iso-support-app/deploy/monitor.sh' ]"
-    check "backup.sh exists" "[ -f '/www/wwwroot/iso-support-app/deploy/backup.sh' ]"
-    check "setup-database.sh exists" "[ -f '/www/wwwroot/iso-support-app/deploy/setup-database.sh' ]"
-    check "setup-cron.sh exists" "[ -f '/www/wwwroot/iso-support-app/deploy/setup-cron.sh' ]"
+    check "monitor.sh exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/deploy/monitor.sh' ]"
+    check "backup.sh exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/deploy/backup.sh' ]"
+    check "setup-database.sh exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/deploy/setup-database.sh' ]"
+    check "setup-cron.sh exists" "[ -f '/www/wwwroot/iso-report.northernthai.co.th/deploy/setup-cron.sh' ]"
     echo ""
     
     # Summary

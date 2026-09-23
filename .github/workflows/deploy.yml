@@ -85,8 +85,8 @@ jobs:
             echo "🚀 Starting deployment..."
             echo "=========================================="
 
-            PROJECT_DIR="/www/wwwroot/iso-support-app"
-            APP_DIR="${PROJECT_DIR}/app"
+            PROJECT_DIR="/www/wwwroot/iso-report.northernthai.co.th"
+            APP_DIR="${PROJECT_DIR}"
 
             # Navigate to project
             cd "$PROJECT_DIR"

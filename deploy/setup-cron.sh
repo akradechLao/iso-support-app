@@ -14,7 +14,7 @@
 set -e
 
 # Configuration
-DEPLOY_DIR="/www/wwwroot/iso-support-app/deploy"
+DEPLOY_DIR="/www/wwwroot/iso-report.northernthai.co.th/deploy"
 BACKUP_SCRIPT="${DEPLOY_DIR}/backup.sh"
 MONITOR_SCRIPT="${DEPLOY_DIR}/monitor.sh"
 
@@ -64,7 +64,7 @@ setup_cron() {
 */5 * * * * ${MONITOR_SCRIPT} --json >> /www/wwwlogs/health-check.log 2>&1
 
 # PM2 monitoring restart (if app crashes) every minute
-* * * * * cd /www/wwwroot/iso-support-app/app && pm2 restart iso-support-app 2>/dev/null || true
+* * * * * cd /www/wwwroot/iso-report.northernthai.co.th && pm2 restart iso-support-app 2>/dev/null || true
 "
 
     # Add to crontab (preserve existing)

@@ -2,7 +2,7 @@
 # Deploy ISO Progress App - clean rebuild (fixes missing _next/static chunks)
 set -euo pipefail
 
-APP_DIR="/www/wwwroot/iso-report-app.northernthai.co.th"
+APP_DIR="/www/wwwroot/iso-report.northernthai.co.th"
 PM2_NAME="iso-support-app"
 PORT=3001
 
@@ -134,4 +134,4 @@ if [ -n "$sample_js" ]; then
   fi
 fi
 
-echo "=== DONE. Purge Cloudflare cache for iso-report-app.northernthai.co.th ==="
+echo "=== DONE. Purge Cloudflare cache for iso-report.northernthai.co.th ==="
