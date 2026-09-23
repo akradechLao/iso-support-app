@@ -65,13 +65,17 @@ export default function Sidebar() {
   const { darkMode, toggleDarkMode } = useDarkMode();
 
   useEffect(() => {
-    try {
-      const actions = actionRepo.findAll({ status: "all", standard: "all", department: "all", period: "all" });
-      setOverdueCount(actions.filter((a) => a.status === "overdue").length);
-    } catch {
-      // ignore
-    }
-  }, []);
+    const update = () => {
+      try {
+        setOverdueCount(actionRepo.findOverdue().length);
+      } catch {
+        // ignore
+      }
+    };
+    update();
+    window.addEventListener("actions-updated", update);
+    return () => window.removeEventListener("actions-updated", update);
+  }, [pathname]);
 
   const getLabel = (key: string) => {
     const keys = key.split(".");

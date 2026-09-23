@@ -119,6 +119,7 @@ export default function NcrCarView() {
     const target = col.statuses[0];
     actionRepo.update(actionId, { status: target as Status });
     setVersion((v) => v + 1);
+    window.dispatchEvent(new Event("actions-updated"));
   };
 
   const openAdd = () => {
@@ -149,6 +150,7 @@ export default function NcrCarView() {
     });
     setShowAdd(false);
     setVersion((v) => v + 1);
+    window.dispatchEvent(new Event("actions-updated"));
   };
 
   if (loading) return <LoadingSpinner fullPage />;

@@ -24,6 +24,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nContext";
+import { isOverdue, parseDate } from "@/lib/date";
 
 interface LogEntry {
   id: string;
@@ -81,13 +82,20 @@ export default function AlertCenterView() {
 
   const sortedActions = useMemo(() => {
     return [...actions].sort((a, b) => {
+      const aResolved = a.status === "closed" || a.status === "verified";
+      const bResolved = b.status === "closed" || b.status === "verified";
+      if (aResolved !== bResolved) return aResolved ? 1 : -1;
       const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
       const diff = priorityOrder[a.priority] - priorityOrder[b.priority];
       if (diff !== 0) return diff;
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      const aTime = parseDate(a.dueDate)?.getTime() ?? 0;
+      const bTime = parseDate(b.dueDate)?.getTime() ?? 0;
+      return aTime - bTime;
     });
   }, [actions]);
 
+  const openActions = actions.filter((a) => a.status !== "closed" && a.status !== "verified");
+  const criticalCount = openActions.filter((a) => a.priority === "critical").length;
   const pendingCount = actions.filter(
     (a) => a.status === "action_in_progress" || a.status === "follow_up"
   ).length;
@@ -186,6 +194,7 @@ export default function AlertCenterView() {
         },
       ]);
       setVersion((v) => v + 1);
+      window.dispatchEvent(new Event("actions-updated"));
     } else {
       setResolvedList((prev) =>
         prev.map((r) => {
@@ -232,7 +241,7 @@ export default function AlertCenterView() {
         {/* Header */}
         <div className="mb-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 p-5 shadow-lg shadow-indigo-500/20">
           <h1 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-sm font-black">7</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-sm font-black">9</span>
             ศูนย์แจ้งเตือน — Alert &amp; Action Center
           </h1>
         </div>
@@ -251,7 +260,7 @@ export default function AlertCenterView() {
           <button onClick={() => router.push("/ncr-car?priority=critical")} className="group relative overflow-hidden rounded-xl border border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100/50 p-4 text-left transition hover:border-orange-300 hover:shadow-md dark:border-orange-800 dark:from-orange-950/50 dark:to-orange-900/30 dark:hover:border-orange-700">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-2xl font-black text-orange-600 dark:text-orange-400">{actions.filter((a) => a.priority === "critical").length}</p>
+                <p className="text-2xl font-black text-orange-600 dark:text-orange-400">{criticalCount}</p>
                 <p className="mt-0.5 text-xs font-semibold text-orange-600/80 dark:text-orange-400/80">Critical</p>
               </div>
               <div className="rounded-lg bg-orange-100 p-1.5 dark:bg-orange-900/50"><AlertTriangle className="h-4 w-4 text-orange-500" /></div>
@@ -275,20 +284,20 @@ export default function AlertCenterView() {
           </div>
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {sortedActions.map((action) => {
-              const isOverdue = new Date(action.dueDate) < new Date() && action.status !== "closed" && action.status !== "verified";
+              const isOverdueItem = isOverdue(action.dueDate, action.status);
               const resolved = isResolved(action.id);
               const record = getRecord(action.id);
               const canResolve = action.status !== "closed" && action.status !== "verified";
 
               return (
-                <div key={action.id} className={cn("px-4 py-3 transition", isOverdue && !resolved && "bg-red-50/50 dark:bg-red-950/20", resolved && "bg-emerald-50/30 dark:bg-emerald-950/10")}>
+                <div key={action.id} className={cn("px-4 py-3 transition", isOverdueItem && !resolved && "bg-red-50/50 dark:bg-red-950/20", resolved && "bg-emerald-50/30 dark:bg-emerald-950/10")}>
                   <div className="flex items-center gap-3">
                     <span className={cn("h-8 w-1 shrink-0 rounded-full", resolved ? "bg-emerald-400" : action.priority === "critical" ? "bg-rose-500" : action.priority === "high" ? "bg-amber-400" : "bg-blue-500")} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-bold text-slate-400">{action.referenceNo}</span>
                         <StatusBadge status={resolved ? "closed" : action.status} />
-                        {isOverdue && !resolved && <span className="rounded-full bg-red-100 px-1.5 py-px text-[10px] font-bold text-red-600 dark:bg-red-900/40 dark:text-red-400">OVERDUE</span>}
+                        {isOverdueItem && !resolved && <span className="rounded-full bg-red-100 px-1.5 py-px text-[10px] font-bold text-red-600 dark:bg-red-900/40 dark:text-red-400">OVERDUE</span>}
                         {resolved && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-1.5 py-px text-[10px] font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"><CheckCircle2 className="h-3 w-3" />RESOLVED</span>}
                       </div>
                       <p className="mt-0.5 truncate text-sm font-medium text-slate-700 dark:text-slate-200">{action.title}</p>
