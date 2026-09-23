@@ -79,6 +79,38 @@ export const ISO_STANDARDS = [
   { id: "45001", code: "ISO 45001", name: "Occupational Health & Safety" },
 ] as const;
 
+export const DOC_TYPES = [
+  "Manual",
+  "Procedure",
+  "Work Instruction",
+  "Form",
+  "Record",
+  "Policy",
+  "CAR",
+  "DAR",
+  "PAR",
+  "Plan",
+  "List",
+] as const;
+
+export type DocType = (typeof DOC_TYPES)[number];
+
+export const LEGAL_TYPES = [
+  "Labor Law",
+  "Safety Law",
+  "Factory Law",
+  "Safety Regulation",
+  "Energy Law",
+  "Tax Law",
+  "Civil Law",
+  "Data Protection",
+  "Environmental Regulation",
+  "Chemical Law",
+  "Waste Law",
+  "Health Regulation",
+  "Other",
+] as const;
+
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Executive Dashboard", icon: "LayoutDashboard" },
   { href: "/iso-progress", label: "ISO Progress", icon: "GitBranch" },

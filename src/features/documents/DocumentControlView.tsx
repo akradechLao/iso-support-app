@@ -17,8 +17,7 @@ import { FileText, Clock, CheckCircle, AlertTriangle, ArrowLeft, Plus, ExternalL
 import { resolveDccUrl, hasDccLink } from "@/lib/dcc";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useI18n } from "@/i18n/I18nContext";
-
-const DOC_TYPES = ["Manual", "Work Instruction", "Form", "Policy"];
+import { DOC_TYPES } from "@/lib/constants";
 
 export default function DocumentControlView() {
   const { filters, setFilters } = useFilters();

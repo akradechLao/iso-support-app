@@ -58,9 +58,10 @@ export default function AlertCenterView() {
   const router = useRouter();
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [version, setVersion] = useState(0);
 
-  const actions = useMemo(() => actionRepo.findAll(filters), [filters]);
-  const overdueActions = useMemo(() => actionRepo.findOverdue(), []);
+  const actions = useMemo(() => actionRepo.findAll(filters), [filters, version]);
+  const overdueActions = useMemo(() => actionRepo.findOverdue(), [version]);
 
   const [modal, setModal] = useState<ResolveModal>({
     open: false,
@@ -91,7 +92,11 @@ export default function AlertCenterView() {
     (a) => a.status === "action_in_progress" || a.status === "follow_up"
   ).length;
 
-  const isResolved = (id: string) => resolvedList.some((r) => r.actionId === id);
+  const isResolved = (id: string) => {
+    const action = actions.find((a) => a.id === id);
+    if (action && (action.status === "closed" || action.status === "verified")) return true;
+    return resolvedList.some((r) => r.actionId === id);
+  };
   const getRecord = (id: string) => resolvedList.find((r) => r.actionId === id);
 
   const now = () => {
@@ -161,6 +166,11 @@ export default function AlertCenterView() {
     };
 
     if (modal.mode === "create") {
+      actionRepo.update(modal.actionId, {
+        status: "closed",
+        closedAt: `${resolveDate} ${resolveTime}`,
+        verification: resolveNotes,
+      });
       setResolvedList((prev) => [
         ...prev,
         {
@@ -175,6 +185,7 @@ export default function AlertCenterView() {
           logs: [newLog],
         },
       ]);
+      setVersion((v) => v + 1);
     } else {
       setResolvedList((prev) =>
         prev.map((r) => {
@@ -335,7 +346,7 @@ export default function AlertCenterView() {
                           <CheckCircle2 className="h-3 w-3" />ดำเนินการแก้ไขแล้ว
                         </button>
                       )}
-                      {resolved && canResolve && (
+                      {resolved && record && (
                         <button onClick={(e) => { e.stopPropagation(); openEditModal(action.id); }} className="shrink-0 inline-flex items-center gap-1 rounded-lg border border-emerald-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-700 dark:bg-slate-800 dark:text-emerald-300 dark:hover:bg-emerald-950/30">
                           <Pencil className="h-3 w-3" />แก้ไข
                         </button>

@@ -1,6 +1,14 @@
 import { LegalRequirement, FilterState } from "@/types";
 import { legalRequirements } from "../mock/legal";
-import { LegalRepository } from "./legalRepository";
+import { CreateLegalRequirementInput, LegalRepository } from "./legalRepository";
+
+function nextId(): string {
+  const max = legalRequirements.reduce((acc, l) => {
+    const n = parseInt(l.id.replace(/\D/g, ""), 10);
+    return Number.isFinite(n) && n > acc ? n : acc;
+  }, 0);
+  return `LGL-${String(max + 1).padStart(3, "0")}`;
+}
 
 export class MockLegalRepository implements LegalRepository {
   findAll(filters?: FilterState): LegalRequirement[] {
@@ -19,6 +27,19 @@ export class MockLegalRepository implements LegalRepository {
 
   findById(id: string): LegalRequirement | null {
     return legalRequirements.find((l) => l.id === id) || null;
+  }
+
+  create(input: CreateLegalRequirementInput): LegalRequirement {
+    const record: LegalRequirement = { ...input, id: nextId() };
+    legalRequirements.push(record);
+    return record;
+  }
+
+  update(id: string, patch: Partial<LegalRequirement>): LegalRequirement | null {
+    const idx = legalRequirements.findIndex((l) => l.id === id);
+    if (idx < 0) return null;
+    legalRequirements[idx] = { ...legalRequirements[idx], ...patch, id };
+    return legalRequirements[idx];
   }
 
   getKpis(filters?: FilterState) {

@@ -4,9 +4,8 @@ import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useFilters } from "@/hooks/useFilters";
-import { actionRepo, documentRepo, auditRepo, legalRepo, riskRepo } from "@/data/repositories";
+import { actionRepo, documentRepo, auditRepo, legalRepo, riskRepo, trainingRepo } from "@/data/repositories";
 import { departments } from "@/data/mock/departments";
-import { trainings } from "@/data/mock/trainings";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import KPITrendCard from "@/components/ui/KPITrendCard";
@@ -31,6 +30,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useI18n } from "@/i18n/I18nContext";
+import { DOC_TYPES } from "@/lib/constants";
 
 function DrillDownLink({ href, label }: { href: string; label: string }) {
   return (
@@ -50,6 +50,7 @@ export default function ExecutiveDashboard() {
   const { t, language } = useI18n();
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 300);
@@ -65,29 +66,30 @@ export default function ExecutiveDashboard() {
     return () => clearTimeout(timer);
   }, [language]);
 
-  const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
-  const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters]);
+  const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters, version]);
+  const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters, version]);
   const auditKpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
-  const legalKpis = useMemo(() => legalRepo.getKpis(filters), [filters]);
+  const legalKpis = useMemo(() => legalRepo.getKpis(filters), [filters, version]);
   const riskKpis = useMemo(() => riskRepo.getKpis(filters), [filters]);
   const heatmapData = useMemo(() => riskRepo.getHeatmapData(), []);
-  const allActions = useMemo(() => actionRepo.findAll(filters), [filters]);
+  const allActions = useMemo(() => actionRepo.findAll(filters), [filters, version]);
   const allAudits = useMemo(() => auditRepo.findAll(filters), [filters]);
-  const allDocuments = useMemo(() => documentRepo.findAll(filters), [filters]);
+  const allDocuments = useMemo(() => documentRepo.findAll(filters), [filters, version]);
+  const allTrainings = useMemo(() => trainingRepo.findAll(), [version]);
   const recentActions = useMemo(() => allActions.slice(0, 6), [allActions]);
 
   const trainingKpis = useMemo(() => {
-    const total = trainings.length;
-    const completed = trainings.filter((tr) => tr.status === "closed").length;
-    const expired = trainings.filter((tr) => tr.status === "overdue").length;
+    const total = allTrainings.length;
+    const completed = allTrainings.filter((tr) => tr.status === "closed").length;
+    const expired = allTrainings.filter((tr) => tr.status === "overdue").length;
     const complianceRate =
       total > 0 ? Math.round((completed / total) * 100) : 0;
     return { total, completed, expired, complianceRate };
-  }, []);
+  }, [allTrainings]);
 
   const trainingByDept = useMemo(() => {
     const map = new Map<string, { total: number; completed: number }>();
-    trainings.forEach((tr) => {
+    allTrainings.forEach((tr) => {
       const entry = map.get(tr.departmentId) || { total: 0, completed: 0 };
       entry.total += 1;
       if (tr.status === "closed") entry.completed += 1;
@@ -102,7 +104,7 @@ export default function ExecutiveDashboard() {
         rate: v.total > 0 ? Math.round((v.completed / v.total) * 100) : 0,
       }))
       .sort((a, b) => b.rate - a.rate);
-  }, [language]);
+  }, [allTrainings, language]);
 
   const standardCompletionRates = useMemo(() => {
     const standards = ["9001", "14001", "45001"];
@@ -141,26 +143,16 @@ export default function ExecutiveDashboard() {
   }, [language]);
 
   const documentByType = useMemo(() => {
-    const types = [
-      "Manual",
-      "Procedure",
-      "Work Instruction",
-      "Form",
-      "Record",
-      "Policy",
-    ];
-    return types
-      .map((type) => {
-        const docs = allDocuments.filter((d) => d.type === type);
-        return {
-          type,
-          total: docs.length,
-          effective: docs.filter((d) => d.status === "published").length,
-          dueReview: docs.filter((d) => d.status === "revision_due").length,
-          overdue: docs.filter((d) => d.approvalStatus === "pending").length,
-        };
-      })
-      .filter((d) => d.total > 0);
+    return DOC_TYPES.map((type) => {
+      const docs = allDocuments.filter((d) => d.type === type);
+      return {
+        type,
+        total: docs.length,
+        effective: docs.filter((d) => d.status === "published").length,
+        dueReview: docs.filter((d) => d.status === "revision_due").length,
+        overdue: docs.filter((d) => d.approvalStatus === "pending").length,
+      };
+    }).filter((d) => d.total > 0);
   }, [allDocuments]);
 
   const documentDonutData = useMemo(

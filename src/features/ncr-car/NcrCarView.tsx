@@ -6,17 +6,20 @@ import Link from "next/link";
 import { useFilters } from "@/hooks/useFilters";
 import { actionRepo } from "@/data/repositories";
 import { departments } from "@/data/mock/departments";
+import { users } from "@/data/mock/users";
 import KPICard from "@/components/ui/KPICard";
 import Panel from "@/components/ui/Panel";
 import FilterBar from "@/components/ui/FilterBar";
 import StatusBadge from "@/components/ui/StatusBadge";
 import DonutChart from "@/components/charts/DonutChart";
-import { CorrectiveAction } from "@/types";
+import Modal from "@/components/ui/Modal";
+import { CorrectiveAction, Priority, Status } from "@/types";
 import { AlertTriangle, Clock, CheckCircle, AlertCircle, Eye, Download, Plus, ArrowLeft, LayoutGrid, List, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import { useI18n } from "@/i18n/I18nContext";
+import { downloadCsv } from "@/lib/export";
 
 type ViewMode = "kanban" | "list";
 
@@ -35,6 +38,18 @@ export default function NcrCarView() {
   const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [version, setVersion] = useState(0);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    departmentId: "QA",
+    ownerId: "U001",
+    dueDate: "",
+    status: "open" as Status,
+    priority: "medium" as Priority,
+    source: "IQA",
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 300);
@@ -50,8 +65,8 @@ export default function NcrCarView() {
     { key: "closed", label: t.status.closed, statuses: ["closed"] },
   ];
 
-  const kpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
-  const actions = useMemo(() => actionRepo.findAll(filters), [filters]);
+  const kpis = useMemo(() => actionRepo.getKpis(filters), [filters, version]);
+  const actions = useMemo(() => actionRepo.findAll(filters), [filters, version]);
 
   const statBoxes = useMemo(() => {
     const overdueCount = actions.filter((a) => {
@@ -94,10 +109,46 @@ export default function NcrCarView() {
 
   const handleDragEnd = () => setDraggedId(null);
 
-  const handleDrop = (e: React.DragEvent, _targetStatus: string) => {
+  const handleDrop = (e: React.DragEvent, colKey: string) => {
     e.preventDefault();
     const actionId = e.dataTransfer.getData("text/plain");
-    if (actionId) setDraggedId(null);
+    setDraggedId(null);
+    if (!actionId) return;
+    const col = KANBAN_COLUMNS.find((c) => c.key === colKey);
+    if (!col || col.statuses.length === 0) return;
+    const target = col.statuses[0];
+    actionRepo.update(actionId, { status: target as Status });
+    setVersion((v) => v + 1);
+  };
+
+  const openAdd = () => {
+    setForm({
+      title: "",
+      description: "",
+      departmentId: "QA",
+      ownerId: "U001",
+      dueDate: "",
+      status: "open",
+      priority: "medium",
+      source: "IQA",
+    });
+    setShowAdd(true);
+  };
+
+  const handleCreate = () => {
+    if (!form.title.trim()) return;
+    actionRepo.create({
+      title: form.title.trim(),
+      description: form.description.trim(),
+      departmentId: form.departmentId,
+      ownerId: form.ownerId,
+      dueDate: form.dueDate || "",
+      status: form.status,
+      priority: form.priority,
+      source: form.source,
+    });
+    setShowAdd(false);
+    setVersion((v) => v + 1);
   };
 
   if (loading) return <LoadingSpinner fullPage />;
@@ -162,11 +213,20 @@ export default function NcrCarView() {
         <div className="mb-4 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-row sm:items-center sm:justify-between">
           <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
+            <button
+              onClick={() =>
+                downloadCsv(
+                  "ncr-car",
+                  ["ID", "Ref", "Title", "Department", "Owner", "DueDate", "Status", "Priority", "Source"],
+                  actions.map((a) => [a.id, a.referenceNo, a.title, a.departmentId, a.ownerId, a.dueDate, a.status, a.priority, a.source])
+                )
+              }
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+            >
               <Download className="h-3.5 w-3.5" />
               {t.common.export}
             </button>
-            <button className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-700">
+            <button onClick={openAdd} className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-700">
               <Plus className="h-3.5 w-3.5" />
               {t.common.addNew}
             </button>
@@ -221,7 +281,7 @@ export default function NcrCarView() {
                         draggedId ? "bg-blue-50/50 ring-2 ring-blue-200 ring-offset-1 dark:bg-blue-900/10 dark:ring-blue-800" : ""
                       )}
                       onDragOver={(e) => e.preventDefault()}
-                      onDrop={(e) => handleDrop(e, col.statuses[0])}
+                      onDrop={(e) => handleDrop(e, col.key)}
                     >
                       {colActions.map((action) => (
                         <button
@@ -318,6 +378,128 @@ export default function NcrCarView() {
           </div>
         )}
       </div>
+
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} title={t.ncrCar.newNcrCarTitle} size="md">
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              {t.ncrCar.fieldTitle} <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldDescription}</label>
+            <textarea
+              rows={3}
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldDepartment}</label>
+              <select
+                value={form.departmentId}
+                onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {departments.map((d) => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldOwner}</label>
+              <select
+                value={form.ownerId}
+                onChange={(e) => setForm({ ...form, ownerId: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldDueDate}</label>
+              <input
+                type="date"
+                value={form.dueDate}
+                onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldPriority}</label>
+              <select
+                value={form.priority}
+                onChange={(e) => setForm({ ...form, priority: e.target.value as Priority })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <option value="low">{t.priority.low}</option>
+                <option value="medium">{t.priority.medium}</option>
+                <option value="high">{t.priority.high}</option>
+                <option value="critical">{t.priority.critical}</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldStatus}</label>
+              <select
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value as Status })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <option value="open">{t.status.open}</option>
+                <option value="root_cause">{t.status.root_cause}</option>
+                <option value="action_planned">{t.status.action_planned}</option>
+                <option value="action_in_progress">{t.status.action_in_progress}</option>
+                <option value="follow_up">{t.status.follow_up}</option>
+                <option value="closed">{t.status.closed}</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.ncrCar.fieldSource}</label>
+              <input
+                type="text"
+                value={form.source}
+                onChange={(e) => setForm({ ...form, source: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-2">
+          <button
+            onClick={() => setShowAdd(false)}
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+          >
+            {t.common.cancel}
+          </button>
+          <button
+            onClick={handleCreate}
+            disabled={!form.title.trim()}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+          >
+            <CheckCircle className="h-4 w-4" />
+            {t.common.save}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

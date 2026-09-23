@@ -224,7 +224,16 @@
     "completeList": "รายการการแก้ไขทั้งหมด",
     "searchNcrCar": "ค้นหา NCR/CAR...",
     "noItems": "ไม่มีรายการ",
-    "due": "ครบกำหนด:"
+    "due": "ครบกำหนด:",
+    "newNcrCarTitle": "เพิ่ม NCR / CAR ใหม่",
+    "fieldTitle": "หัวข้อ",
+    "fieldDescription": "รายละเอียด",
+    "fieldDepartment": "แผนก",
+    "fieldOwner": "ผู้รับผิดชอบ",
+    "fieldDueDate": "วันครบกำหนด",
+    "fieldPriority": "ความสำคัญ",
+    "fieldStatus": "สถานะ",
+    "fieldSource": "แหล่งที่มา"
   },
   "legal": {
     "title": "การประเมินความสอดคล้องกับกฎหมาย",
@@ -246,7 +255,34 @@
     "lawRegulation": "กฎหมาย / ระเบียบ",
     "type": "ประเภท",
     "department": "แผนก",
-    "status": "สถานะ"
+    "status": "สถานะ",
+    "newRequirementTitle": "เพิ่มข้อกำหนดทางกฎหมาย",
+    "description": "รายละเอียด"
+  },
+  "training": {
+    "title": "ฝึกอบรม",
+    "subtitle": "ติดตามแผนการฝึกอบรม สถานะ และจำนวนผู้เข้าร่วม",
+    "register": "ทะเบียนการฝึกอบรม",
+    "registerSub": "โปรแกรมฝึกอบรมและบันทึกทั้งหมด",
+    "search": "ค้นหาการฝึกอบรม...",
+    "addTraining": "เพิ่มการอบรม",
+    "newTrainingTitle": "เพิ่มการอบรมใหม่",
+    "editTraining": "แก้ไขการอบรม",
+    "id": "รหัส",
+    "title_col": "หัวข้อ",
+    "title": "หัวข้อ",
+    "department": "แผนก",
+    "trainer": "วิทยากร",
+    "date": "วันที่",
+    "status": "สถานะ",
+    "attendees": "ผู้เข้าอบรม",
+    "competency": "สมรรถนะ",
+    "competencyRequired": "ต้องมีการประเมินสมรรถนะ",
+    "total": "ทั้งหมด",
+    "completed": "เสร็จสิ้น",
+    "planned": "วางแผนแล้ว",
+    "inProgress": "กำลังดำเนินการ",
+    "currentDate": "วันที่ปัจจุบัน"
   },
   "risks": {
     "title": "ความเสี่ยงและโอกาส",

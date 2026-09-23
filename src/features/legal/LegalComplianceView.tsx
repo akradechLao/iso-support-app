@@ -13,24 +13,36 @@ import DataTable, { Column } from "@/components/ui/DataTable";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ProgressBar from "@/components/ui/ProgressBar";
 import DonutChart from "@/components/charts/DonutChart";
-import { LegalRequirement } from "@/types";
+import Modal from "@/components/ui/Modal";
+import { LegalRequirement, Status } from "@/types";
 import { Scale, CheckCircle, XCircle, Clock, Download, Plus } from "lucide-react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useI18n } from "@/i18n/I18nContext";
+import { LEGAL_TYPES } from "@/lib/constants";
+import { downloadCsv } from "@/lib/export";
 
 export default function LegalComplianceView() {
   const { filters, setFilters } = useFilters();
   const router = useRouter();
   const { t } = useI18n();
   const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [version, setVersion] = useState(0);
+  const [form, setForm] = useState({
+    law: "",
+    type: "Labor Law",
+    departmentId: "HR",
+    status: "pending_assessment" as Status,
+    description: "",
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
 
-  const kpis = useMemo(() => legalRepo.getKpis(filters), [filters]);
-  const legal = useMemo(() => legalRepo.findAll(filters), [filters]);
+  const kpis = useMemo(() => legalRepo.getKpis(filters), [filters, version]);
+  const legal = useMemo(() => legalRepo.findAll(filters), [filters, version]);
 
   const byType = useMemo(() => {
     const map: Record<string, { total: number; comply: number }> = {};
@@ -73,6 +85,19 @@ export default function LegalComplianceView() {
 
   if (loading) return <LoadingSpinner fullPage />;
 
+  const handleCreate = () => {
+    if (!form.law.trim()) return;
+    legalRepo.create({
+      law: form.law.trim(),
+      type: form.type,
+      departmentId: form.departmentId,
+      status: form.status,
+      description: form.description.trim(),
+    });
+    setShowAdd(false);
+    setVersion((v) => v + 1);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-[1540px] space-y-6">
@@ -98,11 +123,26 @@ export default function LegalComplianceView() {
             </div>
             <div className="flex items-center gap-2">
               <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />
-              <button className="flex items-center gap-1.5 rounded-xl border border-white/30 bg-white/10 px-3 py-2 text-xs font-medium text-white hover:bg-white/20 backdrop-blur transition-colors">
+              <button
+                onClick={() =>
+                  downloadCsv(
+                    "legal-compliance",
+                    ["ID", "Law", "Type", "Department", "Status", "Description"],
+                    legal.map((l) => [l.id, l.law, l.type, l.departmentId, l.status, l.description])
+                  )
+                }
+                className="flex items-center gap-1.5 rounded-xl border border-white/30 bg-white/10 px-3 py-2 text-xs font-medium text-white hover:bg-white/20 backdrop-blur transition-colors"
+              >
                 <Download className="h-3.5 w-3.5" />
                 {t.common.export}
               </button>
-              <button className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50 transition-colors">
+              <button
+                onClick={() => {
+                  setForm({ law: "", type: "Labor Law", departmentId: "HR", status: "pending_assessment", description: "" });
+                  setShowAdd(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50 transition-colors"
+              >
                 <Plus className="h-3.5 w-3.5" />
                 {t.common.addNew}
               </button>
@@ -181,6 +221,90 @@ export default function LegalComplianceView() {
           </div>
         </Panel>
       </div>
+
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} title={t.legal.newRequirementTitle} size="md">
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              {t.legal.lawRegulation} <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.law}
+              onChange={(e) => setForm({ ...form, law: e.target.value })}
+              placeholder="เช่น พระราชบัญญัติ..."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.legal.type}</label>
+              <select
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {LEGAL_TYPES.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.legal.department}</label>
+              <select
+                value={form.departmentId}
+                onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {departments.map((d) => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.legal.status}</label>
+            <select
+              value={form.status}
+              onChange={(e) => setForm({ ...form, status: e.target.value as Status })}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            >
+              <option value="pending_assessment">{t.legal.pendingAssessment}</option>
+              <option value="compliant">{t.legal.compliant}</option>
+              <option value="non_compliant">{t.legal.nonCompliant}</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{t.legal.description}</label>
+            <textarea
+              rows={3}
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-2">
+          <button
+            onClick={() => setShowAdd(false)}
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+          >
+            {t.common.cancel}
+          </button>
+          <button
+            onClick={handleCreate}
+            disabled={!form.law.trim()}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+          >
+            <CheckCircle className="h-4 w-4" />
+            {t.common.save}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -224,7 +224,16 @@
     "completeList": "Complete list of corrective actions",
     "searchNcrCar": "Search NCR/CAR...",
     "noItems": "No items",
-    "due": "Due:"
+    "due": "Due:",
+    "newNcrCarTitle": "Add New NCR / CAR",
+    "fieldTitle": "Title",
+    "fieldDescription": "Description",
+    "fieldDepartment": "Department",
+    "fieldOwner": "Owner",
+    "fieldDueDate": "Due Date",
+    "fieldPriority": "Priority",
+    "fieldStatus": "Status",
+    "fieldSource": "Source"
   },
   "legal": {
     "title": "Legal Compliance",
@@ -246,7 +255,34 @@
     "lawRegulation": "Law / Regulation",
     "type": "Type",
     "department": "Department",
-    "status": "Status"
+    "status": "Status",
+    "newRequirementTitle": "Add New Legal Requirement",
+    "description": "Description"
+  },
+  "training": {
+    "title": "Training",
+    "subtitle": "Track training plans, status and attendees",
+    "register": "Training Register",
+    "registerSub": "All training programs and records",
+    "search": "Search training...",
+    "addTraining": "Add Training",
+    "newTrainingTitle": "Add New Training",
+    "editTraining": "Edit Training",
+    "id": "ID",
+    "title_col": "Title",
+    "title": "Title",
+    "department": "Department",
+    "trainer": "Trainer",
+    "date": "Date",
+    "status": "Status",
+    "attendees": "Attendees",
+    "competency": "Competency",
+    "competencyRequired": "Competency assessment required",
+    "total": "Total",
+    "completed": "Completed",
+    "planned": "Planned",
+    "inProgress": "In Progress",
+    "currentDate": "Current date"
   },
   "risks": {
     "title": "Risk & Opportunity",
