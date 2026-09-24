@@ -84,7 +84,7 @@ npm run build
 สร้างไฟล์ config:
 
 ```bash
-nano /www/server/panel/vhost/nginx/iso-support-app.conf
+nano /www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf
 ```
 
 คัดลอกเนื้อหาจากไฟล์ `deploy/nginx/iso-support-app.conf`

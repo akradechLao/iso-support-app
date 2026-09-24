@@ -1,10 +1,24 @@
 #!/bin/bash
 # Deploy ISO Progress App - clean rebuild (fixes missing _next/static chunks)
+# MUST run as www (aaPanel convention) — re-exec as www if needed
 set -euo pipefail
 
 APP_DIR="/www/wwwroot/iso-report.northernthai.co.th"
 PM2_NAME="iso-support-app"
 PORT=3001
+RUN_AS="www"
+
+if [ "$(id -un)" != "$RUN_AS" ]; then
+  if [ "$(id -un)" = "root" ]; then
+    exec sudo -u "$RUN_AS" -E bash "$0" "$@"
+  fi
+  if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+    exec sudo -u "$RUN_AS" -E bash "$0" "$@"
+  fi
+  echo "ERROR: must run as '$RUN_AS' (current: $(id -un))"
+  echo "  sudo -u www -i  then re-run, or: sudo bash $0"
+  exit 1
+fi
 
 free_port() {
   local pids=""
@@ -20,13 +34,9 @@ free_port() {
   if [ -n "$pids" ]; then
     echo "Killing PIDs on port $PORT: $pids"
     # shellcheck disable=SC2086
-    kill -9 $pids 2>/dev/null || sudo kill -9 $pids 2>/dev/null || true
+    kill -9 $pids 2>/dev/null || true
     sleep 1
   fi
-  # Fallback patterns (covers orphaned next-server not tied to pm2)
-  pkill -9 -f "next start" 2>/dev/null || true
-  pkill -9 -f "next-server" 2>/dev/null || true
-  sudo pkill -9 -f "next-server" 2>/dev/null || true
   sleep 1
 
   if ss -ltn "sport = :$PORT" | grep -q LISTEN; then
@@ -34,7 +44,7 @@ free_port() {
     ss -ltnp "sport = :$PORT" || true
     exit 1
   fi
-  echo "Port $PORT is free"
+  echo "Port $PORT is free (user=$(id -un))"
 }
 
 echo "=== 1) Stop app and free port ==="

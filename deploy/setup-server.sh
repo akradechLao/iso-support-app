@@ -97,9 +97,9 @@ fi
 # Step 5: Setup PM2 Startup
 # ===========================================
 
-log "Step 5: Setting up PM2 startup..."
-pm2 startup systemd -u root --hp /root
-success "PM2 startup configured"
+log "Step 5: Setting up PM2 startup for www..."
+sudo -u www env PM2_HOME=/home/www/.pm2 pm2 startup systemd -u www --hp /home/www
+success "PM2 startup configured for www"
 
 # ===========================================
 # Step 6: Create directories
@@ -118,34 +118,34 @@ success "Directories created"
 
 log "Step 7: Cloning repository..."
 cd /www/wwwroot
-if [ ! -d "iso-support-app" ]; then
-    git clone https://github.com/akradechLao/iso-support-app.git iso-support-app
+if [ ! -d "iso-report.northernthai.co.th" ]; then
+    git clone https://github.com/akradechLao/iso-support-app.git iso-report.northernthai.co.th
+    chown -R www:www iso-report.northernthai.co.th
     success "Repository cloned"
 else
     warning "Repository already exists, pulling latest..."
-    cd iso-support-app
-    git pull origin master
+    cd iso-report.northernthai.co.th
+    sudo -u www git pull origin master
 fi
 
 # ===========================================
 # Step 8: Install dependencies & build
 # ===========================================
 
-log "Step 8: Installing dependencies and building..."
+log "Step 8: Installing dependencies and building as www..."
 cd /www/wwwroot/iso-report.northernthai.co.th
-npm install
-npm run build
+sudo -u www npm install
+sudo -u www npm run build
 success "Application built"
 
 # ===========================================
 # Step 9: Setup PM2
 # ===========================================
 
-log "Step 9: Setting up PM2..."
+log "Step 9: Setting up PM2 as www..."
 cd /www/wwwroot/iso-report.northernthai.co.th
-pm2 start ecosystem.config.js
-pm2 save
-success "PM2 configured and started"
+sudo -u www env PM2_HOME=/home/www/.pm2 bash -c 'pm2 delete iso-support-app 2>/dev/null || true; pm2 start ecosystem.config.js && pm2 save'
+success "PM2 configured and started as www"
 
 # ===========================================
 # Step 10: Install Nginx (if not using AaPanel)

@@ -8,6 +8,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3001,
+        PM2_HOME: "/home/www/.pm2",
       },
       // Instance config
       instances: 1,

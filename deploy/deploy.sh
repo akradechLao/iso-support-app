@@ -52,9 +52,13 @@ echo "🚀 ISO Support App - Deployment Script"
 echo "=========================================="
 echo ""
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    warning "Running as non-root user. Some operations may require sudo."
+# Check user — app ops must run as www (aaPanel convention)
+if [ "$(id -un)" != "www" ] && [ "$(id -un)" != "root" ]; then
+    error "Run as www: sudo -u www bash $0"
+fi
+if [ "$(id -un)" = "root" ]; then
+    echo "Re-exec as www..."
+    exec sudo -u www -E bash "$0" "$@"
 fi
 
 # Create backup directory

@@ -59,10 +59,10 @@ chmod +x deploy/setup-cron.sh
 
 ```bash
 # Copy Nginx config
-cp deploy/nginx/iso-support-app.conf /www/server/panel/vhost/nginx/
+cp deploy/nginx/iso-support-app.conf /www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf
 
 # Edit domain name
-nano /www/server/panel/vhost/nginx/iso-support-app.conf
+nano /www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf
 
 # Reload Nginx
 /etc/init.d/nginx reload

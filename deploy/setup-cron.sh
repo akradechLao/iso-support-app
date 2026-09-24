@@ -13,10 +13,19 @@
 
 set -e
 
-# Configuration
+# Configuration — run as www (not administrator)
 DEPLOY_DIR="/www/wwwroot/iso-report.northernthai.co.th/deploy"
 BACKUP_SCRIPT="${DEPLOY_DIR}/backup.sh"
 MONITOR_SCRIPT="${DEPLOY_DIR}/monitor.sh"
+RUN_AS="www"
+
+if [ "$(id -un)" != "$RUN_AS" ]; then
+  if [ "$(id -un)" = "root" ]; then
+    exec sudo -u "$RUN_AS" -E bash "$0" "$@"
+  fi
+  echo "ERROR: run as $RUN_AS: sudo -u www bash $0"
+  exit 1
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -64,7 +73,7 @@ setup_cron() {
 */5 * * * * ${MONITOR_SCRIPT} --json >> /www/wwwlogs/health-check.log 2>&1
 
 # PM2 monitoring restart (if app crashes) every minute
-* * * * * cd /www/wwwroot/iso-report.northernthai.co.th && pm2 restart iso-support-app 2>/dev/null || true
+* * * * * export PM2_HOME=/home/www/.pm2; cd /www/wwwroot/iso-report.northernthai.co.th && pm2 restart iso-support-app 2>/dev/null || true
 "
 
     # Add to crontab (preserve existing)

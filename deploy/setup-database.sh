@@ -358,10 +358,23 @@ setup_postgresql() {
 
     success "PostgreSQL installed"
 
-    # Create database and user
-    sudo -u postgres psql << 'EOF'
+    # Create database and user (password from env, never hardcode)
+    local db_pass="${POSTGRES_APP_PASSWORD:-}"
+    if [ -z "$db_pass" ]; then
+        db_pass=$(openssl rand -base64 24 2>/dev/null || date +%s | sha256sum | cut -c1-24)
+        echo ""
+        echo "Generated POSTGRES_APP_PASSWORD (save this):"
+        echo "$db_pass"
+        echo ""
+    fi
+
+    # Escape for SQL literal
+    local db_pass_esc
+    db_pass_esc=$(printf '%s' "$db_pass" | sed "s/'/''/g")
+
+    sudo -u postgres psql << EOF
 -- Create user
-CREATE USER iso_app WITH PASSWORD 'iso_secure_password_2024';
+CREATE USER iso_app WITH PASSWORD '${db_pass_esc}';
 
 -- Create database
 CREATE DATABASE iso_progress OWNER iso_app;
@@ -373,11 +386,10 @@ EOF
     success "PostgreSQL database created"
 
     echo ""
-    echo "Database connection string:"
-    echo "postgresql://iso_app:iso_secure_password_2024@localhost:5432/iso_progress"
-    echo ""
     echo "Add this to your .env.local:"
-    echo "DATABASE_URL=postgresql://iso_app:iso_secure_password_2024@localhost:5432/iso_progress"
+    echo "DATABASE_URL=postgresql://iso_app:${db_pass}@localhost:5432/iso_progress"
+    echo ""
+    echo "Also set: PGPASSWORD=${db_pass}  (for deploy/backup.sh)"
 }
 
 # ===========================================

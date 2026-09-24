@@ -15,9 +15,18 @@
 
 set -e
 
+# App backup/restore must run as www; only nginx restore elevates via sudo
+if [ "$(id -un)" != "www" ] && [ "$(id -un)" != "root" ]; then
+    echo "Run as www: sudo -u www bash $0"
+    exit 1
+fi
+if [ "$(id -un)" = "root" ]; then
+    exec sudo -u www -E bash "$0" "$@"
+fi
+
 # Configuration
 PROJECT_DIR="/www/wwwroot/iso-report.northernthai.co.th"
-APP_DIR="${PROJECT_DIR}/app"
+APP_DIR="${PROJECT_DIR}"
 DB_DIR="${PROJECT_DIR}/data"
 BACKUP_BASE="/www/wwwbackups/iso-report.northernthai.co.th"
 BACKUP_DIR="${BACKUP_BASE}/$(date +%Y%m%d-%H%M%S)"
@@ -64,13 +73,16 @@ backup_app() {
         --exclude='.next' \
         --exclude='.git' \
         --exclude='data' \
-        app/ \
         deploy/ \
         .github/ \
         docs/ \
         data/processed/ \
         data/raw/ \
         *.md \
+        *.js \
+        *.ts \
+        *.json \
+        *.mjs \
         .gitignore \
         .env.example \
         2>/dev/null || true
@@ -82,7 +94,7 @@ backup_app() {
 
     # Backup .next build
     if [ -d "$APP_DIR/.next" ]; then
-        tar -czf "$BACKUP_DIR/app/next-build.tar.gz" -C app .next/
+        tar -czf "$BACKUP_DIR/app/next-build.tar.gz" -C "$APP_DIR" .next/
         success "Next.js build backed up"
     fi
 }
@@ -110,8 +122,8 @@ backup_database() {
     fi
 
     # PostgreSQL backup (if available)
-    if command -v pg_dump &> /dev/null; then
-        PGPASSWORD="iso_secure_password_2024" pg_dump -U iso_app -h localhost iso_progress > "$BACKUP_DIR/database/postgresql-dump.sql" 2>/dev/null || true
+    if command -v pg_dump &> /dev/null && [ -n "${PGPASSWORD:-}" ]; then
+        pg_dump -U iso_app -h localhost iso_progress > "$BACKUP_DIR/database/postgresql-dump.sql" 2>/dev/null || true
         if [ -s "$BACKUP_DIR/database/postgresql-dump.sql" ]; then
             success "PostgreSQL backup created"
         fi
@@ -128,8 +140,9 @@ backup_config() {
     mkdir -p "$BACKUP_DIR/config"
 
     # Nginx config
-    if [ -f "/www/server/panel/vhost/nginx/iso-support-app.conf" ]; then
-        cp "/www/server/panel/vhost/nginx/iso-support-app.conf" "$BACKUP_DIR/config/"
+    NGINX_CONF="/www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf"
+    if [ -f "$NGINX_CONF" ]; then
+        cp "$NGINX_CONF" "$BACKUP_DIR/config/iso-report.northernthai.co.th.conf"
         success "Nginx config backed up"
     fi
 
@@ -255,12 +268,19 @@ restore_backup() {
         success "Database restored"
     fi
 
-    # Restore config
-    if [ -f "$BACKUP_FILE/config/iso-support-app.conf" ]; then
-        log "Restoring Nginx config..."
-        cp "$BACKUP_FILE/config/iso-support-app.conf" "/www/server/panel/vhost/nginx/"
-        /etc/init.d/nginx reload
-        success "Nginx config restored"
+    # Restore config (needs root — only this step)
+    RESTORE_CONF="$BACKUP_FILE/config/iso-report.northernthai.co.th.conf"
+    if [ -f "$RESTORE_CONF" ]; then
+        log "Restoring Nginx config (requires sudo)..."
+        if sudo -n true 2>/dev/null; then
+            sudo cp "$RESTORE_CONF" "/www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf"
+            sudo nginx -t && sudo /etc/init.d/nginx reload
+            success "Nginx config restored"
+        else
+            warning "Skip nginx restore — no passwordless sudo for www. Run as root:"
+            echo "  sudo cp '$RESTORE_CONF' /www/server/panel/vhost/nginx/iso-report.northernthai.co.th.conf"
+            echo "  sudo nginx -t && sudo /etc/init.d/nginx reload"
+        fi
     fi
 
     # Install dependencies
@@ -270,7 +290,8 @@ restore_backup() {
     success "Dependencies installed"
 
     # Start app
-    log "Starting application..."
+    log "Starting application (as www)..."
+    export PM2_HOME=/home/www/.pm2
     pm2 start ecosystem.config.js
     pm2 save
     success "Application started"

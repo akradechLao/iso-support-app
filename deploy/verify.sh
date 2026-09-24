@@ -119,7 +119,7 @@ main() {
         echo ""
         echo -e "${YELLOW}  Your ISO Support App is ready!${NC}"
         echo ""
-        echo -e "  Access: https://YOUR_DOMAIN.com"
+        echo -e "  Access: https://iso-report.northernthai.co.th"
         echo ""
         return 0
     else

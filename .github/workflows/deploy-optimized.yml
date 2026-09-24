@@ -1,8 +1,8 @@
 name: Deploy with Artifact (Optimized)
 
 on:
-  push:
-    branches: [main, master]
+  # Manual only — avoids double deploy race with deploy.yml
+  workflow_dispatch:
 
 jobs:
   lint-and-build:
