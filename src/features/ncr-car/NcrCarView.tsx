@@ -175,7 +175,7 @@ export default function NcrCarView() {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                4 · NCR / CAR — การแก้ไขและป้องกัน
+                NCR / CAR — การแก้ไขและป้องกัน
               </h1>
               <p className="mt-0.5 text-sm text-blue-100">{t.ncrCar.subtitle}</p>
             </div>

@@ -344,7 +344,7 @@ export default function ExecutiveDashboard() {
         {/* Section 1: KPI Summary */}
         <div className="mb-6">
           <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
-            1 · {t.dashboard.kpiSummary}
+            {t.dashboard.kpiSummary}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             <KPITrendCard

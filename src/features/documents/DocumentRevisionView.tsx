@@ -156,9 +156,6 @@ export default function DocumentRevisionView() {
 
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">
-              4
-            </span>
             <div>
               <h1 className="text-lg font-bold tracking-tight text-slate-950 dark:text-white">
                 {t.dashboard.documentRevisionTitle}

@@ -110,7 +110,7 @@ export default function AuditDashboard() {
         {/* Section Header */}
         <div className="mb-6 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 shadow-lg dark:border-blue-800">
           <h1 className="text-xl font-bold tracking-tight text-white">
-            3 · การตรวจประเมินภายใน — Internal Audit
+            การตรวจประเมินภายใน — Internal Audit
           </h1>
         </div>
 

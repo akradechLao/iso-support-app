@@ -117,7 +117,7 @@ export default function LegalComplianceView() {
                 <Scale className="h-5 w-5" />
               </div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight">5 · การประเมินความสอดคล้องกับกฎหมาย — Legal Compliance</h1>
+                <h1 className="text-xl font-bold tracking-tight">การประเมินความสอดคล้องกับกฎหมาย — Legal Compliance</h1>
                 <p className="mt-0.5 text-sm text-blue-100">{t.legal.subtitle}</p>
               </div>
             </div>
