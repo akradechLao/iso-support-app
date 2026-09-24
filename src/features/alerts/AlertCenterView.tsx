@@ -242,7 +242,7 @@ export default function AlertCenterView() {
         {/* Header */}
         <div className="mb-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 p-5 shadow-lg shadow-indigo-500/20">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h1 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-white">
               ศูนย์แจ้งเตือน — Alert &amp; Action Center
             </h1>
             <FilterBar filters={filters} onChange={setFilters} departments={departments} showPeriod={false} />

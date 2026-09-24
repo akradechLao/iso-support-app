@@ -174,7 +174,7 @@ export default function NcrCarView() {
               <Target className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+              <h1 className="text-2xl font-bold tracking-tight text-white">
                 NCR / CAR — การแก้ไขและป้องกัน
               </h1>
               <p className="mt-0.5 text-sm text-blue-100">{t.ncrCar.subtitle}</p>

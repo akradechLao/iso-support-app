@@ -166,7 +166,7 @@ export default function TrainingView() {
           <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-white/10" />
           <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight text-white">
+              <h1 className="text-2xl font-bold tracking-tight text-white">
                 ฝึกอบรม — Training &amp; Competency
               </h1>
               <p className="relative mt-1 text-xs text-blue-100">{t.training.subtitle}</p>

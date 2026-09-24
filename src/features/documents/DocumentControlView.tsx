@@ -161,7 +161,7 @@ export default function DocumentControlView() {
         {/* Section Header */}
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <h1 className="text-lg font-bold tracking-tight text-slate-950 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
               ควบคุมเอกสาร — Document Control
             </h1>
           </div>
