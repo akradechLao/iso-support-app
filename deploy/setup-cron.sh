@@ -57,7 +57,7 @@ setup_cron() {
     chmod +x "$BACKUP_SCRIPT"
     chmod +x "$MONITOR_SCRIPT"
 
-    # Create cron entries
+    # Create cron entries (no forced every-minute restart — monitor.sh alerts instead)
     CRON_ENTRIES="
 # ===========================================
 # ISO Support App - Automated Tasks
@@ -71,9 +71,6 @@ setup_cron() {
 
 # Health check every 5 minutes (log to file)
 */5 * * * * ${MONITOR_SCRIPT} --json >> /www/wwwlogs/health-check.log 2>&1
-
-# PM2 monitoring restart (if app crashes) every minute
-* * * * * export PM2_HOME=/home/www/.pm2; cd /www/wwwroot/iso-report.northernthai.co.th && pm2 restart iso-support-app 2>/dev/null || true
 "
 
     # Add to crontab (preserve existing)
@@ -85,7 +82,6 @@ setup_cron() {
     echo "  - Daily backup: 2:00 AM"
     echo "  - Weekly cleanup: Sunday 3:00 AM"
     echo "  - Health check: Every 5 minutes"
-    echo "  - PM2 auto-restart: Every minute"
 }
 
 # ===========================================

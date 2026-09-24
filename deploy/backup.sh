@@ -166,10 +166,10 @@ backup_config() {
         success "SSL certificates backed up"
     fi
 
-    # PM2 saved process list
+    # PM2 saved process list (www user)
     pm2 save --force 2>/dev/null || true
-    if [ -f /root/.pm2/dump.pm2 ]; then
-        cp /root/.pm2/dump.pm2 "$BACKUP_DIR/config/"
+    if [ -f /home/www/.pm2/dump.pm2 ]; then
+        cp /home/www/.pm2/dump.pm2 "$BACKUP_DIR/config/"
         success "PM2 process list backed up"
     fi
 }

@@ -49,33 +49,33 @@ export default function ExecutiveDashboard() {
   const router = useRouter();
   const { t, language } = useI18n();
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [version, setVersion] = useState(0);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 300);
-    setLastUpdated(
+  const lastUpdated = useMemo(
+    () =>
       new Date().toLocaleString(language === "th" ? "th-TH" : "en-GB", {
         year: "numeric",
         month: "short",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      })
-    );
-    return () => clearTimeout(timer);
-  }, [language]);
+      }),
+    [language]
+  );
 
-  const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters, version]);
-  const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters, version]);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const actionKpis = useMemo(() => actionRepo.getKpis(filters), [filters]);
+  const documentKpis = useMemo(() => documentRepo.getKpis(filters), [filters]);
   const auditKpis = useMemo(() => auditRepo.getKpis(filters), [filters]);
-  const legalKpis = useMemo(() => legalRepo.getKpis(filters), [filters, version]);
+  const legalKpis = useMemo(() => legalRepo.getKpis(filters), [filters]);
   const riskKpis = useMemo(() => riskRepo.getKpis(filters), [filters]);
   const heatmapData = useMemo(() => riskRepo.getHeatmapData(filters), [filters]);
-  const allActions = useMemo(() => actionRepo.findAll(filters), [filters, version]);
+  const allActions = useMemo(() => actionRepo.findAll(filters), [filters]);
   const allAudits = useMemo(() => auditRepo.findAll(filters), [filters]);
-  const allDocuments = useMemo(() => documentRepo.findAll(filters), [filters, version]);
-  const allTrainings = useMemo(() => trainingRepo.findAll(filters), [filters, version]);
+  const allDocuments = useMemo(() => documentRepo.findAll(filters), [filters]);
+  const allTrainings = useMemo(() => trainingRepo.findAll(filters), [filters]);
   const isFiltered = filters.department !== "all" || filters.status !== "all" || filters.standard !== "all" || filters.period !== "all";
 
   const trainingKpis = useMemo(() => {
