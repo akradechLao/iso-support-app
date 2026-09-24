@@ -100,7 +100,7 @@ export default function LegalComplianceView() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-[1540px] space-y-6">
+      <div className="mx-auto space-y-6">
         {/* Navigation */}
         <Link
           href="/dashboard"

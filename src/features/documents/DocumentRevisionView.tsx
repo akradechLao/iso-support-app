@@ -145,7 +145,7 @@ export default function DocumentRevisionView() {
 
   return (
     <div className="p-3 sm:p-4 lg:p-5">
-      <div className="mx-auto max-w-[1540px]">
+      <div className="mx-auto">
         <Link
           href="/dashboard"
           className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors"

@@ -4,17 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  GitBranch,
-  FileText,
-  FileCheck2,
-  ClipboardCheck,
-  AlertTriangle,
-  Scale,
-  Shield,
-  Bell,
-  GraduationCap,
   ChevronLeft,
+  ChevronRight,
   Menu,
   X,
   Moon,
@@ -24,19 +15,6 @@ import { cn } from "@/lib/utils";
 import { actionRepo } from "@/data/repositories";
 import { useI18n } from "@/i18n/I18nContext";
 import { useDarkMode } from "@/contexts/DarkModeContext";
-
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  LayoutDashboard,
-  GitBranch,
-  FileText,
-  FileCheck2,
-  ClipboardCheck,
-  AlertTriangle,
-  Scale,
-  Shield,
-  Bell,
-  GraduationCap,
-};
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "nav.dashboard", icon: "LayoutDashboard" },
@@ -51,15 +29,20 @@ const NAV_ITEMS = [
   { href: "/training", label: "nav.training", icon: "GraduationCap" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+  onCollapsedChange: (collapsed: boolean) => void;
+  mobileOpen: boolean;
+  onMobileOpenChange: (open: boolean) => void;
+}
+
+export default function Sidebar({
+  collapsed,
+  onCollapsedChange,
+  mobileOpen,
+  onMobileOpenChange,
+}: SidebarProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("sidebar-collapsed") === "true";
-    }
-    return false;
-  });
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [overdueCount, setOverdueCount] = useState(0);
   const { t, language, setLanguage } = useI18n();
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -92,7 +75,7 @@ export default function Sidebar() {
     <>
       {/* Mobile hamburger */}
       <button
-        onClick={() => setMobileOpen(true)}
+        onClick={() => onMobileOpenChange(true)}
         className="fixed left-4 top-4 z-50 rounded-xl bg-slate-950 p-2 text-white shadow-lg lg:hidden"
         aria-label="Menu"
       >
@@ -103,7 +86,7 @@ export default function Sidebar() {
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
+          onClick={() => onMobileOpenChange(false)}
         />
       )}
 
@@ -115,21 +98,36 @@ export default function Sidebar() {
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-slate-100 dark:border-slate-700 px-4">
+        {/* Logo + collapse toggle */}
+        <div className="flex h-16 items-center gap-2 border-b border-slate-100 dark:border-slate-700 px-3">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-700 to-indigo-950 text-xs font-black text-white">
             ISO
           </div>
           {!collapsed && (
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-slate-900 dark:text-white">{t.logo.title}</p>
               <p className="text-[10px] text-slate-400">{t.logo.subtitle}</p>
             </div>
           )}
+          {collapsed && <div className="flex-1" />}
+          {/* Collapse / expand (desktop) */}
+          <button
+            type="button"
+            onClick={() => onCollapsedChange(!collapsed)}
+            aria-label={collapsed ? t.common.expand : t.common.collapse}
+            title={collapsed ? t.common.expand : t.common.collapse}
+            className="hidden shrink-0 rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 lg:inline-flex"
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+            )}
+          </button>
           {/* Mobile close */}
           <button
-            onClick={() => setMobileOpen(false)}
-            className="ml-auto rounded-lg p-1 text-slate-400 hover:text-slate-600 lg:hidden"
+            onClick={() => onMobileOpenChange(false)}
+            className="rounded-lg p-1 text-slate-400 hover:text-slate-600 lg:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -139,14 +137,13 @@ export default function Sidebar() {
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           <ul className="space-y-1">
             {NAV_ITEMS.map((item, index) => {
-              const Icon = ICONS[item.icon];
               const active = isActive(item.href);
               const number = index + 1;
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => onMobileOpenChange(false)}
                     aria-current={active ? "page" : undefined}
                     title={collapsed ? `${number}. ${getLabel(item.label)}` : undefined}
                     className={cn(
@@ -201,17 +198,16 @@ export default function Sidebar() {
 
         {/* Footer area */}
         <div className="border-t border-slate-100 dark:border-slate-700 p-3">
-          {/* Collapse toggle (desktop only) */}
+          {/* Collapse toggle footer (desktop, label) */}
           <button
-            onClick={() => {
-              const next = !collapsed;
-              setCollapsed(next);
-              localStorage.setItem("sidebar-collapsed", String(next));
-            }}
+            type="button"
+            onClick={() => onCollapsedChange(!collapsed)}
+            aria-label={collapsed ? t.common.expand : t.common.collapse}
             className="hidden w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 lg:flex"
           >
             <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
             {!collapsed && <span>{t.common.collapse}</span>}
+            {collapsed && <span className="sr-only">{t.common.expand}</span>}
           </button>
           {/* Dark Mode Toggle */}
           <button

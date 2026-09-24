@@ -96,7 +96,7 @@ export default function AuditDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="mx-auto max-w-[1540px] p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto p-4 sm:p-6 lg:p-8">
         {/* Navigation */}
         <nav className="mb-4 flex items-center justify-between text-sm">
           <Link href="/" className="flex items-center gap-1 font-medium text-slate-500 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">

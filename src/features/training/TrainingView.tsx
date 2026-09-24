@@ -154,7 +154,7 @@ export default function TrainingView() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-[1540px] space-y-5">
+      <div className="mx-auto space-y-5">
         {/* Back Navigation */}
         <Link href="/" className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition">
           &larr; กลับไป Dashboard

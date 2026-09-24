@@ -157,7 +157,7 @@ export default function NcrCarView() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 py-6 sm:px-6 lg:px-8">
         {/* Back Navigation */}
         <Link
           href="/dashboard"

@@ -226,7 +226,7 @@ export default function AlertCenterView() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
-      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 py-6 sm:px-6 lg:px-8">
         {/* Nav */}
         <div className="mb-6 flex items-center justify-between">
           <Link href="/dashboard" className="group flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400">

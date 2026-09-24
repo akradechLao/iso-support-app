@@ -151,7 +151,7 @@ export default function DocumentControlView() {
 
   return (
     <div className="p-3 sm:p-4 lg:p-5">
-      <div className="mx-auto max-w-[1540px]">
+      <div className="mx-auto">
         {/* Back Link */}
         <Link href="/" className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors">
           <ArrowLeft className="h-3.5 w-3.5" />

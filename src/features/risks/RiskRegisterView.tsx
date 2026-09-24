@@ -81,7 +81,7 @@ export default function RiskRegisterView() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-[1540px]">
+      <div className="mx-auto">
         {/* Back Navigation */}
         <Link
           href="/dashboard"
