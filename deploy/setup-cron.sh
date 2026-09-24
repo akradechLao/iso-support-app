@@ -53,9 +53,9 @@ warning() {
 setup_cron() {
     log "Setting up cron jobs..."
 
-    # Make scripts executable
-    chmod +x "$BACKUP_SCRIPT"
-    chmod +x "$MONITOR_SCRIPT"
+    # Make scripts executable (ignore if not owner)
+    chmod +x "$BACKUP_SCRIPT" 2>/dev/null || true
+    chmod +x "$MONITOR_SCRIPT" 2>/dev/null || true
 
     # Create cron entries (no forced every-minute restart — monitor.sh alerts instead)
     CRON_ENTRIES="
